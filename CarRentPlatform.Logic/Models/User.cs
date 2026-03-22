@@ -21,4 +21,3 @@ namespace CarRentPlatform.Logic.Models
         public List<RentalPeriod> Bookings { get; set; } = new();
     }
 }
- 

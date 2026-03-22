@@ -7,9 +7,9 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface ICarModelRepository
     {
-        public void Add(CarModel carModel);
-        public void Update(Guid ModelId, string? brand, string? model, ModelSpecifications? modelSpecifications);
-        public Car GetById(Guid ModelId);
-        public List<Car> GetByFilter(string? brand, string? model);
+        public CarModel Add(CarModel carModel);
+        public CarModel Update(Guid modelId, string? brand, string? model);
+        public CarModel GetById(Guid modelId);
+        public List<CarModel> GetByFilter(List<string>? brands, List<string>? models);
     }
 }

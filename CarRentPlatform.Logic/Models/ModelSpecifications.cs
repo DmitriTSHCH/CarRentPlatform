@@ -35,5 +35,6 @@ namespace CarRentPlatform.Logic.Models
         [Range(0.0, double.MaxValue)]
         public float HighwayRangeKm { get; set; }
         public CarType CarType { get; set; }
+        public bool IsAutomaticTransmission { get; set; }
     }
 }

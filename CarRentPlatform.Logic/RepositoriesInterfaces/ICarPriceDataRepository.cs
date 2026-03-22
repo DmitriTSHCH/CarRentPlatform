@@ -7,8 +7,9 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface ICarPriceDataRepository
     {
-        public void Add(CarPriceData carPriceData);
-        public void Update(Guid CarId, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN);
+        public CarPriceData Add(CarPriceData carPriceData);
+        public CarPriceData Update(Guid carId, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN);
         public CarPriceData GetById(Guid carId);
+        public List<CarPriceData> GetByFilter(decimal? minPricePerDayBYN, decimal? maxPricePerDayBYN, decimal? minLateReturnPenaltyPerDayBYN, decimal? maxLateReturnPenaltyPerDayBYN);
     }
 }

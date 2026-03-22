@@ -7,10 +7,15 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface ICarRepository
     {
-        public void Add(Car car);
-        public void Update(Guid CarId, Guid? modelId, CarModel? CarModel, CarColor? carColor, CarPriceData? carPriceData, CarReservationData? carReservationData );
+        public Car Add(Car car);
+        public Car Update(Guid carId, Guid? modelId, CarColor? carColor);
         public Car GetById(Guid carId);
-        public List<Car> GetByFilter(string? brand, string? model, CarColor? carColor);
-        public List<Car> GetByFilter(string? brand, string? model, CarColor? carColor, CarType? carType, Fuel? fuel, int? numberOfSeatsWithDriver, float? trunkVoluem, float? tankCapacity, float? cityConsumptionPer100km, float? highwayConsumptionPer100km, float? cityRangeKm, float? highwayRangeKm, DateTime dateTimeStartNewPeriod, DateTime dateTimeEndNewPeriod, decimal pricePerDay);
+        public List<Car> GetByFilter(List<string>? brands, List<string>? models, List<CarColor>? carColors);
+        public List<Car> GetByFilter(List<string>? brands, List<string>? models, List<CarColor>? carColors,
+                                     List<CarType>? carTypes, List<Fuel>? fuels, int? minNumberOfSeatsWithDriver,
+                                     float? minTrunkVoluem, float? minTankCapacity, float? maxCityConsumptionPer100km,
+                                     float? maxHighwayConsumptionPer100km, float? minCityRangeKm,
+                                     float? minHighwayRangeKm, bool? IsAutomaticTransmission, decimal? maxPricePerDayBYN, 
+                                     DateTime? dateTimeStartNewPeriod, DateTime? dateTimeEndNewPeriod);
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 namespace CarRentPlatform.Logic.Models
 {
     [Flags]
-    public enum DriverLicenseCategory
+    public enum DriverLicenseCategoryFlags
     { 
         None = 0,
         A = 1,  // Мотоциклы
@@ -22,7 +22,7 @@ namespace CarRentPlatform.Logic.Models
         public string LastName { get; set; }
         public string PassportNumber { get; set; }
         public string DriverLicenseNumber { get; set; }
-        public DriverLicenseCategory DriverLicenseCategory { get; set; }
+        public DriverLicenseCategoryFlags DriverLicenseCategory { get; set; }
         public DateOnly LicenseExpirationDate { get; set; }
     }
 }

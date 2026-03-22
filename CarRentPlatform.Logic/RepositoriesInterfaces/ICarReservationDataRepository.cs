@@ -7,10 +7,13 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface ICarReservationDataRepository
     {
-        public void Add(CarReservationData carReservationData);
-        public void Update(Guid CarId, List<RentalPeriod>? occupiedPeriods, CarReservationStatus? carReservationStatus);
-        public void AddOccupiedPeriod(Guid CarId, RentalPeriod occupiedPeriod);
-        public void DeleteOccupiedPeriod(Guid CarId, RentalPeriod occupiedPeriod);
+        public CarReservationData Add(CarReservationData carReservationData);
+        public CarReservationData UpdateStatus(Guid CarId, CarReservationStatus carReservationStatus);
+        public CarReservationData AddOccupiedPeriod(Guid CarId, RentalPeriod occupiedPeriod);
+        public CarReservationData DeleteOccupiedPeriod(Guid CarId, RentalPeriod occupiedPeriod);
         public CarReservationData GetById(Guid carId);
+        public List<CarReservationData> GetByFreePeriod(DateTime dateTimeStart, DateTime dateTimeEnd);
+        public List<CarReservationData> GetByOccupiedPeriod(DateTime dateTimeStart, DateTime dateTimeEnd);
+        public List<CarReservationData> GetByStatus(List<CarReservationStatus> carReservationStatuses);
     }
 }
