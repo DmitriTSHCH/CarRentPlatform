@@ -12,7 +12,7 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
         public RentalPeriod GetById(Guid periodId);
         public List<RentalPeriod> GetByCarId(Guid carId);
         public List<RentalPeriod> GetByUserId(Guid userId);
-        public List<RentalPeriod> GetByOccupiedPeriod(DateTime dateTimeStart, DateTime dateTimeEnd);
-        public List<RentalPeriod> GetByFilter( DateTime? dateTimeStart, DateTime? dateTimeEnd, Guid? carId, Guid? userId, List<PeriodStatus>? periodStatuses, decimal? minRentalPriceBYN, decimal? maxRentalPriceBYN);
+        public List<RentalPeriod> GetByOccupiedPeriod(DateTime? beforeDateTime, DateTime? afterDateTime);
+        public List<RentalPeriod> GetByFilter( DateTime? beforeDateTime, DateTime? afterDateTime, Guid? carId, Guid? userId, List<PeriodStatus>? periodStatuses, decimal? minRentalPriceBYN, decimal? maxRentalPriceBYN);
     }
 }

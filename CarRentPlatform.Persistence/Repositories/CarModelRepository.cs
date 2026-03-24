@@ -45,6 +45,7 @@ namespace CarRentPlatform.Persistence.Repositories
         public CarModel GetById(Guid modelId)
         {
             return _dbContext.CarModels
+                .Include(m => m.ModelSpecifications)
                 .AsNoTracking()
                 .FirstOrDefault(m => m.ModelId == modelId);
         }

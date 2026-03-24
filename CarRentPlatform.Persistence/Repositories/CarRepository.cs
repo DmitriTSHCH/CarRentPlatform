@@ -136,7 +136,7 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder = builder.Where(c => !c
                 .CarReservationData
                 .OccupiedPeriods
-                .Any(p => dateTimeStartNewPeriod >= (p.DateTimeEnd + c.CarReservationData.ServiceTime) && dateTimeEndNewPeriod <= (p.DateTimeStart - c.CarReservationData.ServiceTime)));
+                .Any(p => dateTimeStartNewPeriod < (p.DateTimeEnd + c.CarReservationData.ServiceTime) && dateTimeEndNewPeriod > (p.DateTimeStart - c.CarReservationData.ServiceTime)));
             }
 
             builder.Include(c => c.CarModel)
@@ -149,6 +149,9 @@ namespace CarRentPlatform.Persistence.Repositories
         public Car GetById(Guid carId)
         {
             return _dbContext.Cars
+                .Include(c => c.CarModel)
+                .Include(c => c.CarPriceData)
+                .Include(c => c.CarReservationData)
                 .AsNoTracking()
                 .FirstOrDefault(m => m.CarId == carId);
         }

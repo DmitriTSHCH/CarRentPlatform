@@ -16,6 +16,8 @@ namespace CarRentPlatform.Persistence
         public DbSet<ModelSpecifications> ModelSpecifications { get; }
         public DbSet<RentalPeriod> RentalPeriods { get; }
         public DbSet<User> Users { get; }
+        public DbSet<UserAccount> UserAccounts { get; }
+        public DbSet<UserCondition> UserConditions { get; }
         public DbSet<UserDocumentsData> UserDocumentsDatas { get; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,6 +29,8 @@ namespace CarRentPlatform.Persistence
             modelBuilder.ApplyConfiguration(new ModelSpecificationsConfiguration());
             modelBuilder.ApplyConfiguration(new RentalPeriodConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAccountConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConditionConfiguration());
             modelBuilder.ApplyConfiguration(new UserDocumentsDataConfiguration());
             base.OnModelCreating(modelBuilder);
         }
