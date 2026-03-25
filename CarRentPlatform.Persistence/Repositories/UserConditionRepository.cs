@@ -31,9 +31,33 @@ namespace CarRentPlatform.Persistence.Repositories
                 .FirstOrDefault(r => r.UserId == userId);
         }
 
-        public List<UserCondition> GetByFilter(bool? isVerified, List<UserStatus>? userStatuses, decimal? minRating, decimal? maxRating)
+        public List<UserCondition> GetByFilter(bool? isVerified, List<UserStatus>? userStatuses, 
+                                               decimal? minRating, decimal? maxRating)
         {
-            throw new NotImplementedException();
+            var builder = _dbContext.UserConditions
+                .AsNoTracking();
+
+            if (isVerified != null)
+            {
+                builder.Where(u => u.IsVerified == isVerified);
+            }
+
+            if (userStatuses != null)
+            {
+                builder.Where(u => userStatuses.Contains(u.UserStatus));
+            }
+
+            if (minRating != null)
+            {
+                builder.Where(u => u.Rating >= minRating);
+            }
+
+            if (maxRating != null)
+            {
+                builder.Where(u => u.Rating <= maxRating);
+            }
+
+            return builder.ToList();
         }
 
         public UserCondition Update(Guid userId, bool? isVerified,
@@ -62,17 +86,29 @@ namespace CarRentPlatform.Persistence.Repositories
 
         public UserCondition UpdateRating(Guid userId, decimal rating)
         {
-            throw new NotImplementedException();
+            _dbContext.UserConditions
+                .Where(m => m.UserId == userId)
+                .ExecuteUpdate(r => r.SetProperty(p => p.Rating, rating));
+
+            return GetById(userId);
         }
 
         public UserCondition UpdateStatus(Guid userId, UserStatus userStatus)
         {
-            throw new NotImplementedException();
+            _dbContext.UserConditions
+                .Where(m => m.UserId == userId)
+                .ExecuteUpdate(r => r.SetProperty(p => p.UserStatus, userStatus));
+
+            return GetById(userId);
         }
 
         public UserCondition UpdateVerification(Guid userId, bool isVerified)
         {
-            throw new NotImplementedException();
+            _dbContext.UserConditions
+                .Where(m => m.UserId == userId)
+                .ExecuteUpdate(r => r.SetProperty(p => p.IsVerified, isVerified));
+
+            return GetById(userId);
         }
     }
 }
