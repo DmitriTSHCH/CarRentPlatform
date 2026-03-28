@@ -15,19 +15,23 @@ namespace CarRentPlatform.Persistence.Configurations
 
             builder.HasOne(u => u.UserDocumentsData)
                 .WithOne()
-                .HasForeignKey<UserDocumentsData>(u => u.UserId);
+                .HasForeignKey<UserDocumentsData>(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(u => u.UserCondition)
                 .WithOne()
-                .HasForeignKey<UserCondition>(u => u.UserId);
+                .HasForeignKey<UserCondition>(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<UserAccount>()
                 .WithOne()
-                .HasForeignKey<UserAccount>(u => u.UserId);
+                .HasForeignKey<UserAccount>(u => u.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(u => u.Bookings)
                 .WithOne()
-                .HasForeignKey(r => r.UserId);
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

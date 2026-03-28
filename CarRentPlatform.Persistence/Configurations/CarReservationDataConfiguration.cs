@@ -15,7 +15,8 @@ namespace CarRentPlatform.Persistence.Configurations
 
             builder.HasMany(e => e.OccupiedPeriods)
                 .WithOne()
-                .HasForeignKey(r => r.CarId);
+                .HasForeignKey(r => r.CarId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

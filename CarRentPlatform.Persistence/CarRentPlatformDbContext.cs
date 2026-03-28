@@ -1,14 +1,16 @@
 ﻿using CarRentPlatform.Logic.Models;
 using CarRentPlatform.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CarRentPlatform.Persistence
 {
-    public class CarRentPlatformDbContext(DbContextOptions<CarRentPlatformDbContext> options) : DbContext(options)
+    public class CarRentPlatformDbContext : DbContext
     {
+        private readonly IConfiguration _configuration;
         public DbSet<Car> Cars { get; }
         public DbSet<CarModel> CarModels { get; }
         public DbSet<CarPriceData> CarPriceDatas { get; }
@@ -19,6 +21,11 @@ namespace CarRentPlatform.Persistence
         public DbSet<UserAccount> UserAccounts { get; }
         public DbSet<UserCondition> UserConditions { get; }
         public DbSet<UserDocumentsData> UserDocumentsDatas { get; }
+
+        public CarRentPlatformDbContext (IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +40,14 @@ namespace CarRentPlatform.Persistence
             modelBuilder.ApplyConfiguration(new UserConditionConfiguration());
             modelBuilder.ApplyConfiguration(new UserDocumentsDataConfiguration());
             base.OnModelCreating(modelBuilder);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Database"));
+            }
         }
     }
 }

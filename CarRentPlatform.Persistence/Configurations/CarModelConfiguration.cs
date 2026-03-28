@@ -15,7 +15,8 @@ namespace CarRentPlatform.Persistence.Configurations
 
             builder.HasOne(m => m.ModelSpecifications)
                 .WithOne()
-                .HasForeignKey<ModelSpecifications>(s => s.ModelId);
+                .HasForeignKey<ModelSpecifications>(s => s.ModelId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(m => m.Brand)
                 .HasMaxLength(50);
