@@ -16,70 +16,74 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public void Add(UserAccount userAccount)
+        public async Task<bool> AddAsync(UserAccount userAccount, CancellationToken cancellationToken)
         {
-            _dbContext.Add(userAccount);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(userAccount, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
+
+            return await _dbContext.UserAccounts.AnyAsync(a => a.UserId == userAccount.UserId, cancellationToken);
         }
 
-        public string GetEmailById(Guid userId)
+        public async Task<string?> GetEmailByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return _dbContext.UserAccounts
-                .FirstOrDefault(a => a.UserId == userId)
+            return ( await _dbContext.UserAccounts
+                .FirstOrDefaultAsync(a => a.UserId == userId, cancellationToken))
                 .Email;
         }
 
-        public Guid GetIdByEmail(string email)
+        public async Task<Guid?> GetIdByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            return _dbContext.UserAccounts
-                .FirstOrDefault(a => a.Email == email)
+            return (await _dbContext.UserAccounts
+                .FirstOrDefaultAsync(a => a.Email == email, cancellationToken))
                 .UserId;
         }
 
-        public Guid GetIdByPhoneNumber(string phoneNumber)
+        public async Task<Guid?> GetIdByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken)
         {
-            return _dbContext.UserAccounts
-                .FirstOrDefault(a => a.PhoneNumber == phoneNumber)
+            return (await _dbContext.UserAccounts
+                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber, cancellationToken))
                 .UserId;
         }
 
-        public string GetPhoneNumberById(Guid userId)
+        public async Task<string?> GetPhoneNumberByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return _dbContext.UserAccounts
-                .FirstOrDefault(a => a.UserId == userId)
+            return (await _dbContext.UserAccounts
+                .FirstOrDefaultAsync(a => a.UserId == userId, cancellationToken))
                 .PhoneNumber;
         }
 
-        public bool IsCorrectPasswodr(string phoneNumber, string hashedPassword)
+        public async Task<bool> IsCorrectPasswordAsync(string phoneNumber, string hashedPassword, CancellationToken cancellationToken)
         {
-            return _dbContext.UserAccounts
-                .FirstOrDefault(a => a.PhoneNumber == phoneNumber)
-                .HashedPassword == hashedPassword;
+            return hashedPassword == (await _dbContext.UserAccounts
+                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber, cancellationToken))?
+                .HashedPassword;
         }
 
-        public string UpdateEmail(Guid userId, string email)
+        public async Task<string?> UpdateEmailAsync(Guid userId, string email, CancellationToken cancellationToken)
         {
             _dbContext.UserAccounts
                 .Where(m => m.UserId == userId)
-                .ExecuteUpdate(r => r.SetProperty(p => p.Email, email));
+                .ExecuteUpdateAsync(r => r.SetProperty(p => p.Email, email), cancellationToken);
 
-            return GetEmailById(userId);
+            return await GetEmailByIdAsync(userId, cancellationToken);
         }
 
-        public void UpdatePassword(Guid userId, string hashedPassword)
+        public async Task<bool> UpdatePasswordAsync(Guid userId, string hashedPassword, CancellationToken cancellationToken)
         {
             _dbContext.UserAccounts
                 .Where(m => m.UserId == userId)
-                .ExecuteUpdate(r => r.SetProperty(p => p.HashedPassword, hashedPassword));
+                .ExecuteUpdateAsync(r => r.SetProperty(p => p.HashedPassword, hashedPassword), cancellationToken);
+
+            return await _dbContext.UserAccounts.AnyAsync(a => a.UserId == userId, cancellationToken);
         }
 
-        public string UpdatePhoneNumber(Guid userId, string phoneNumber)
+        public async Task<string?> UpdatePhoneNumberAsync(Guid userId, string phoneNumber, CancellationToken cancellationToken)
         {
             _dbContext.UserAccounts
                 .Where(m => m.UserId == userId)
-                .ExecuteUpdate(r => r.SetProperty(p => p.PhoneNumber, phoneNumber));
+                .ExecuteUpdateAsync(r => r.SetProperty(p => p.PhoneNumber, phoneNumber), cancellationToken);
 
-            return GetPhoneNumberById(userId);
+            return await GetPhoneNumberByIdAsync(userId, cancellationToken);
         }
     }
 }

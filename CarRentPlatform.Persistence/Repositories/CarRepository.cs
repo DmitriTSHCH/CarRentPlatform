@@ -16,15 +16,16 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public Car Add(Car car)
+        public async Task<Car?> AddAsync(Car car, CancellationToken cancellationToken)
         {
-            _dbContext.Add(car);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(car, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(car.CarId);
+            return await GetByIdAsync(car.CarId, cancellationToken);
         }
 
-        public List<Car> GetByFilter(List<string>? brands, List<string>? models, List<CarColor>? carColors)
+        public async Task<List<Car>> GetByFilterAsync(List<string>? brands, List<string>? models, 
+                                                List<CarColor>? carColors, CancellationToken cancellationToken)
         {
             var builder = _dbContext.Cars
                 .AsNoTracking();
@@ -48,15 +49,16 @@ namespace CarRentPlatform.Persistence.Repositories
                 .Include(c => c.CarPriceData)
                 .Include(c => c.CarReservationData);
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public List<Car> GetByFilter(List<string>? brands, List<string>? models, List<CarColor>? carColors,
+        public async Task<List<Car>> GetByFilterAsync(List<string>? brands, List<string>? models, List<CarColor>? carColors,
                                      List<CarType>? carTypes, List<Fuel>? fuels, int? minNumberOfSeatsWithDriver,
                                      float? minTrunkVoluem, float? minTankCapacity, float? maxCityConsumptionPer100km,
                                      float? maxHighwayConsumptionPer100km, float? minCityRangeKm,
                                      float? minHighwayRangeKm, bool? isAutomaticTransmission, decimal? maxPricePerDayBYN,
-                                     DateTime? dateTimeStartNewPeriod, DateTime? dateTimeEndNewPeriod)
+                                     DateTime? dateTimeStartNewPeriod, DateTime? dateTimeEndNewPeriod, 
+                                     CancellationToken cancellationToken)
         {
             var builder = _dbContext.Cars
                 .AsNoTracking();
@@ -143,35 +145,35 @@ namespace CarRentPlatform.Persistence.Repositories
                 .Include(c => c.CarPriceData)
                 .Include(c => c.CarReservationData);
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public Car GetById(Guid carId)
+        public async Task<Car?> GetByIdAsync(Guid carId, CancellationToken cancellationToken)
         {
-            return _dbContext.Cars
+            return await _dbContext.Cars
                 .Include(c => c.CarModel)
                 .Include(c => c.CarPriceData)
                 .Include(c => c.CarReservationData)
                 .AsNoTracking()
-                .FirstOrDefault(m => m.CarId == carId);
+                .FirstOrDefaultAsync(m => m.CarId == carId, cancellationToken);
         }
 
-        public Car Update(Guid carId, Guid? modelId, CarColor? carColor )
+        public async Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, CancellationToken cancellationToken)
         {
             var builder = _dbContext.Cars
                 .Where(m => m.CarId == carId);
 
             if (modelId != null)
             {
-                builder.ExecuteUpdate(m => m.SetProperty(p => p.ModelId, modelId));
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.ModelId, modelId), cancellationToken);
             }
 
             if (carColor != null)
             {
-                builder.ExecuteUpdate(m => m.SetProperty(p => p.CarColor, carColor));
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.CarColor, carColor), cancellationToken);
             }
 
-            return GetById(carId);
+            return await GetByIdAsync(carId, cancellationToken);
         }
     }
 }

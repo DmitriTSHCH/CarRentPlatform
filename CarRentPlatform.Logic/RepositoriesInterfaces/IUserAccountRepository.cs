@@ -7,14 +7,14 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface IUserAccountRepository
     {
-        public void Add(UserAccount userAccount);
-        public void UpdatePassword(Guid userId, string hashedPassword);
-        public string UpdatePhoneNumber(Guid userId, string phoneNumber);
-        public string UpdateEmail(Guid userId, string email);
-        public string GetPhoneNumberById(Guid userId);
-        public string GetEmailById(Guid userId);
-        public Guid GetIdByPhoneNumber(string phoneNumber);
-        public Guid GetIdByEmail(string email);
-        public bool IsCorrectPasswodr(string phoneNumber, string hashedPassword);
+        public Task<bool> AddAsync(UserAccount userAccount, CancellationToken cancellationToken = default);
+        public Task<bool> UpdatePasswordAsync(Guid userId, string hashedPassword, CancellationToken cancellationToken = default);
+        public Task<string?> UpdatePhoneNumberAsync(Guid userId, string phoneNumber, CancellationToken cancellationToken = default);
+        public Task<string?> UpdateEmailAsync(Guid userId, string email, CancellationToken cancellationToken = default);
+        public Task<string?> GetPhoneNumberByIdAsync(Guid userId, CancellationToken cancellationToken = default);
+        public Task<string?> GetEmailByIdAsync(Guid userId, CancellationToken cancellationToken = default);
+        public Task<Guid?> GetIdByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken = default);
+        public Task<Guid?> GetIdByEmailAsync(string email, CancellationToken cancellationToken = default);
+        public Task<bool> IsCorrectPasswordAsync(string phoneNumber, string hashedPassword, CancellationToken cancellationToken = default);
     }
 }

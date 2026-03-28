@@ -7,14 +7,16 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface IUserConditionRepository
     {
-        public UserCondition Add(UserCondition userCondition);
-        public UserCondition GetById(Guid userId);
-        public UserCondition Update(Guid userId, bool? isVerified,
-                           UserStatus? userStatus, decimal? rating);
-        public UserCondition UpdateVerification(Guid userId, bool isVerified);
-        public UserCondition UpdateRating(Guid userId, decimal rating);
-        public UserCondition UpdateStatus(Guid userId, UserStatus userStatus);
-        public List<UserCondition> GetByFilter( bool? isVerified, List<UserStatus>? userStatuses, 
-                                                decimal? minRating, decimal? maxRating);
+        public Task<UserCondition?> AddAsync(UserCondition userCondition, CancellationToken cancellationToken = default);
+        public Task<UserCondition?> GetByIdAsync(Guid userId, CancellationToken cancellationToken = default);
+        public Task<UserCondition?> UpdateAsync(Guid userId, bool? isVerified,
+                                    UserStatus? userStatus, decimal? rating,
+                                    CancellationToken cancellationToken = default);
+        public Task<UserCondition?> UpdateVerificationAsync(Guid userId, bool isVerified, CancellationToken cancellationToken = default);
+        public Task<UserCondition?> UpdateRatingAsync(Guid userId, decimal rating, CancellationToken cancellationToken = default);
+        public Task<UserCondition?> UpdateStatusAsync(Guid userId, UserStatus userStatus, CancellationToken cancellationToken = default);
+        public Task<List<UserCondition>> GetByFilterAsync( bool? isVerified, List<UserStatus>? userStatuses, 
+                                                decimal? minRating, decimal? maxRating, 
+                                                CancellationToken cancellationToken = default);
     }
 }

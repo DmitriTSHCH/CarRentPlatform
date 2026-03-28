@@ -17,65 +17,65 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public CarReservationData Add(CarReservationData carReservationData)
+        public async Task<CarReservationData?> AddAsync(CarReservationData carReservationData, CancellationToken cancellationToken)
         {
-            _dbContext.Add(carReservationData);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(carReservationData, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(carReservationData.CarId);
+            return await GetByIdAsync(carReservationData.CarId, cancellationToken);
         }
 
-        public CarReservationData Update(Guid carId, CarReservationStatus? carReservationStatus, TimeSpan? serviceTime)
+        public async Task<CarReservationData?> UpdateAsync(Guid carId, CarReservationStatus? carReservationStatus, TimeSpan? serviceTime, CancellationToken cancellationToken)
         {
             var builder = _dbContext.CarReservationDatas
                 .Where(m => m.CarId == carId);
 
             if (carReservationStatus != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.CarReservationStatus, carReservationStatus));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.CarReservationStatus, carReservationStatus), cancellationToken);
             }
 
             if (serviceTime != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.ServiceTime, serviceTime));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.ServiceTime, serviceTime), cancellationToken);
             }
 
-            return GetById(carId);
+            return await GetByIdAsync(carId, cancellationToken);
         }
 
-        public CarReservationData GetById(Guid carId)
+        public async Task<CarReservationData?> GetByIdAsync(Guid carId, CancellationToken cancellationToken)
         {
-            return _dbContext.CarReservationDatas
+            return await _dbContext.CarReservationDatas
                 .Include(r => r.OccupiedPeriods)
                 .AsNoTracking()
-                .FirstOrDefault(r => r.CarId == carId);
+                .FirstOrDefaultAsync(r => r.CarId == carId, cancellationToken);
         }
 
-        public List<CarReservationData> GetByFreePeriod(DateTime dateTimeStart, DateTime dateTimeEnd)
+        public async Task<List<CarReservationData>> GetByFreePeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken)
         {
-            return _dbContext.CarReservationDatas
+            return await _dbContext.CarReservationDatas
                 .Where(c => !c
                 .OccupiedPeriods
                 .Any(p => dateTimeStart < (p.DateTimeEnd + c.ServiceTime) && dateTimeEnd > (p.DateTimeStart - c.ServiceTime)))
-                .ToList();
+                .ToListAsync(cancellationToken);
         }
 
-        public List<CarReservationData> GetByOccupiedPeriod(DateTime dateTimeStart, DateTime dateTimeEnd)
+        public async Task<List<CarReservationData>> GetByOccupiedPeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken)
         {
-            return _dbContext.CarReservationDatas
+            return await _dbContext.CarReservationDatas
                 .Where(c => c
                 .OccupiedPeriods
                 .Any(p => dateTimeStart < (p.DateTimeEnd + c.ServiceTime) && dateTimeEnd > (p.DateTimeStart - c.ServiceTime)))
-                .ToList();
+                .ToListAsync(cancellationToken);
         }
 
-        public List<CarReservationData> GetByStatus(List<CarReservationStatus> carReservationStatuses)
+        public async Task<List<CarReservationData>> GetByStatusAsync(List<CarReservationStatus> carReservationStatuses, CancellationToken cancellationToken)
         {
-            return _dbContext.CarReservationDatas
+            return await _dbContext.CarReservationDatas
                 .Include(r => r.OccupiedPeriods)
                 .AsNoTracking()
                 .Where(r => carReservationStatuses.Contains(r.CarReservationStatus))
-                .ToList();
+                .ToListAsync(cancellationToken);
         }
     }
 }

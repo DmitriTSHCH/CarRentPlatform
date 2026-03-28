@@ -7,9 +7,9 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface ICarModelRepository
     {
-        public CarModel Add(CarModel carModel);
-        public CarModel Update(Guid modelId, string? brand, string? model);
-        public CarModel GetById(Guid modelId);
-        public List<CarModel> GetByFilter(List<string>? brands, List<string>? models);
+        public Task<CarModel?> AddAsync(CarModel carModel, CancellationToken cancellationToken = default);
+        public Task<CarModel?> UpdateAsync(Guid modelId, string? brand, string? model, CancellationToken cancellationToken = default);
+        public Task<CarModel?> GetByIdAsync(Guid modelId, CancellationToken cancellationToken = default);
+        public Task<List<CarModel>> GetByFilterAsync(List<string>? brands, List<string>? models, CancellationToken cancellationToken = default);
     }
 }

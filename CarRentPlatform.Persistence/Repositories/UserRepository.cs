@@ -16,17 +16,18 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public User Add(User user)
+        public async Task<User?> AddAsync(User user, CancellationToken cancellationToken)
         {
-            _dbContext.Add(user);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(user, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(user.UserId);
+            return await GetByIdAsync(user.UserId, cancellationToken);
         }
 
-        public List<User> GetByFilter(string? firstName, string? lastName, DriverLicenseCategoryFlags? driverLicenseCategory,
+        public async Task<List<User>> GetByFilterAsync(string? firstName, string? lastName, DriverLicenseCategoryFlags? driverLicenseCategory,
                                        DateOnly? licenseExpirationDateWithin, bool? isVerified,
-                                       List<UserStatus>? userStatuses, decimal? minRating, decimal? maxRating)
+                                       List<UserStatus>? userStatuses, decimal? minRating, decimal? maxRating, 
+                                       CancellationToken cancellationToken)
         {
             var builder = _dbContext.Users
                 .Include(u => u.UserDocumentsData)
@@ -73,17 +74,17 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder.Where(u => u.UserCondition.Rating <= maxRating);
             }
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public User GetById(Guid userId)
+        public async Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return _dbContext.Users
+            return await _dbContext.Users
                 .Include(u => u.UserDocumentsData)
                 .Include(u => u.UserCondition)
                 .Include(u => u.Bookings)
                 .AsNoTracking()
-                .FirstOrDefault(r => r.UserId == userId);
+                .FirstOrDefaultAsync(r => r.UserId == userId, cancellationToken);
         }
     }
 }

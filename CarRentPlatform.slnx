@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="CarRentPlatform.Application/CarRentPlatform.Application.csproj" Id="293d83c9-ae87-4a9b-a515-2e9730bfd5e0" />
+  <Project Path="CarRentPlatform.Infrastructure/CarRentPlatform.Infrastructure.csproj" Id="c6120817-88ae-4611-96e8-0efafc2a5fa3" />
   <Project Path="CarRentPlatform.Logic/CarRentPlatform.Logic.csproj" />
   <Project Path="CarRentPlatform.Persistence/CarRentPlatform.Persistence.csproj" Id="b344c2dc-3dc2-4d86-bf6c-06daad7910b6" />
   <Project Path="CarRentPlatform/CarRentPlatform.API.csproj" />

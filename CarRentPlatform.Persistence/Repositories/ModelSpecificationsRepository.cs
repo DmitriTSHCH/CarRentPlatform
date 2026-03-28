@@ -16,19 +16,20 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public ModelSpecifications Add(ModelSpecifications modelSpecifications)
+        public async Task<ModelSpecifications?> AddAsync(ModelSpecifications modelSpecifications, CancellationToken cancellationToken)
         {
-            _dbContext.Add(modelSpecifications);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(modelSpecifications, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(modelSpecifications.ModelId);
+            return await GetByIdAsync(modelSpecifications.ModelId, cancellationToken);
         }
 
-        public List<ModelSpecifications> GetByFilter(List<Fuel>? fuels, List<CarType>? carTypes,
+        public async Task<List<ModelSpecifications>> GetByFilterAsync(List<Fuel>? fuels, List<CarType>? carTypes,
                                                      int? minNumberOfSeatsWithDriver, float? minTrunkVoluem,
                                                      float? minTankCapacity, float? maxCityConsumptionPer100km,
                                                      float? maxHighwayConsumptionPer100km, float? minCityRangeKm,
-                                                     float? minHighwayRangeKm, bool? isAutomaticTransmission)
+                                                     float? minHighwayRangeKm, bool? isAutomaticTransmission, 
+                                                     CancellationToken cancellationToken)
         {
             var builder = _dbContext.ModelSpecifications
                 .AsNoTracking();
@@ -83,75 +84,75 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder = builder.Where(c => c.IsAutomaticTransmission == isAutomaticTransmission);
             }
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public ModelSpecifications GetById(Guid modelId)
+        public async Task<ModelSpecifications?> GetByIdAsync(Guid modelId, CancellationToken cancellationToken)
         {
-            return _dbContext.ModelSpecifications
+            return await _dbContext.ModelSpecifications
                 .AsNoTracking()
-                .FirstOrDefault(r => r.ModelId == modelId);
+                .FirstOrDefaultAsync(r => r.ModelId == modelId, cancellationToken);
         }
 
-        public ModelSpecifications Update(Guid modelId, Fuel? fuel, CarType? carType, int? numberOfSeatsWithDriver,
+        public async Task<ModelSpecifications?> UpdateAsync(Guid modelId, Fuel? fuel, CarType? carType, int? numberOfSeatsWithDriver,
                                           float? trunkVoluem, float? tankCapacity, float? cityConsumptionPer100km,
                                           float? highwayConsumptionPer100km, float? cityRangeKm, float? highwayRangeKm,
-                                          bool? isAutomaticTransmission)
+                                          bool? isAutomaticTransmission, CancellationToken cancellationToken)
         {
             var builder = _dbContext.ModelSpecifications
                 .Where(m => m.ModelId == modelId);
 
             if (carType != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.CarType, carType));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.CarType, carType), cancellationToken);
             }
 
             if (fuel != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.Fuel, fuel));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.Fuel, fuel), cancellationToken);
             }
 
             if (numberOfSeatsWithDriver != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.NumberOfSeatsWithDriver, numberOfSeatsWithDriver));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.NumberOfSeatsWithDriver, numberOfSeatsWithDriver), cancellationToken);
             }
 
             if (trunkVoluem != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.TrunkVoluem, trunkVoluem));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.TrunkVoluem, trunkVoluem), cancellationToken);
             }
 
             if (tankCapacity != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.TankCapacity, tankCapacity));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.TankCapacity, tankCapacity), cancellationToken);
             }
 
             if (cityConsumptionPer100km != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.CityConsumptionPer100km, cityConsumptionPer100km));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.CityConsumptionPer100km, cityConsumptionPer100km), cancellationToken);
             }
 
             if (highwayConsumptionPer100km != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.HighwayConsumptionPer100km, highwayConsumptionPer100km));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.HighwayConsumptionPer100km, highwayConsumptionPer100km), cancellationToken);
             }
 
             if (cityRangeKm != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.CityRangeKm, cityRangeKm));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.CityRangeKm, cityRangeKm), cancellationToken);
             }
 
             if (highwayRangeKm != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.HighwayRangeKm, highwayRangeKm));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.HighwayRangeKm, highwayRangeKm), cancellationToken);
             }
 
             if (isAutomaticTransmission != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.IsAutomaticTransmission, isAutomaticTransmission));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.IsAutomaticTransmission, isAutomaticTransmission), cancellationToken);
             }
 
-            return GetById(modelId);
+            return await GetByIdAsync(modelId, cancellationToken);
         }
     }
 }

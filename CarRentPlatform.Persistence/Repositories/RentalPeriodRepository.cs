@@ -16,23 +16,26 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public RentalPeriod Add(RentalPeriod rentalPeriod)
+        public async Task<RentalPeriod?> AddAsync(RentalPeriod rentalPeriod, CancellationToken cancellationToken)
         {
-            _dbContext.Add(rentalPeriod);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(rentalPeriod, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(rentalPeriod.PeriodId);
+            return await GetByIdAsync(rentalPeriod.PeriodId, cancellationToken);
         }
 
-        public List<RentalPeriod> GetByCarId(Guid carId)
+        public async Task<List<RentalPeriod>> GetByCarIdAsync(Guid carId, CancellationToken cancellationToken)
         {
-            return _dbContext.RentalPeriods
+            return await _dbContext.RentalPeriods
                 .AsNoTracking()
                 .Where(r => r.CarId == carId)
-                .ToList();
+                .ToListAsync(cancellationToken);
         }
 
-        public List<RentalPeriod> GetByFilter(DateTime? beforeDateTime, DateTime? afterDateTime, Guid? carId, Guid? userId, List<PeriodStatus>? periodStatuses, decimal? minRentalPriceBYN, decimal? maxRentalPriceBYN)
+        public async Task<List<RentalPeriod>> GetByFilterAsync(DateTime? beforeDateTime, DateTime? afterDateTime, Guid? carId,
+                                                         Guid? userId, List<PeriodStatus>? periodStatuses,
+                                                         decimal? minRentalPriceBYN, decimal? maxRentalPriceBYN, 
+                                                         CancellationToken cancellationToken)
         {
             var builder = _dbContext.RentalPeriods
                 .AsNoTracking();
@@ -72,17 +75,17 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder = builder.Where(c => c.RentalPriceBYN <= maxRentalPriceBYN);
             }
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public RentalPeriod GetById(Guid periodId)
+        public async Task<RentalPeriod?> GetByIdAsync(Guid periodId, CancellationToken cancellationToken)
         {
-            return _dbContext.RentalPeriods
+            return await _dbContext.RentalPeriods
                 .AsNoTracking()
-                .FirstOrDefault(r => r.PeriodId == periodId);
+                .FirstOrDefaultAsync(r => r.PeriodId == periodId, cancellationToken);
         }
 
-        public List<RentalPeriod> GetByOccupiedPeriod(DateTime? beforeDateTime, DateTime? afterDateTime)
+        public async Task<List<RentalPeriod>> GetByOccupiedPeriodAsync(DateTime? beforeDateTime, DateTime? afterDateTime, CancellationToken cancellationToken)
         {
             var builder = _dbContext.RentalPeriods
                 .AsNoTracking();
@@ -97,54 +100,54 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder = builder.Where(c => c.DateTimeStart >= afterDateTime);
             }
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public List<RentalPeriod> GetByUserId(Guid userId)
+        public async Task<List<RentalPeriod>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return _dbContext.RentalPeriods
+            return await _dbContext.RentalPeriods
                 .AsNoTracking()
                 .Where(r => r.UserId == userId)
-                .ToList();
+                .ToListAsync(cancellationToken);
         }
 
-        public RentalPeriod Update(Guid periodId, DateTime? dateTimeStart, DateTime? dateTimeEnd, Guid? carId,
-                                   Guid? userId, PeriodStatus? periodStatus, decimal? rentalPriceBYN)
+        public async Task<RentalPeriod?> UpdateAsync(Guid periodId, DateTime? dateTimeStart, DateTime? dateTimeEnd, Guid? carId,
+                                   Guid? userId, PeriodStatus? periodStatus, decimal? rentalPriceBYN, CancellationToken cancellationToken)
         {
             var builder = _dbContext.RentalPeriods
                 .Where(m => m.PeriodId == periodId);
 
             if (dateTimeStart != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.DateTimeStart, dateTimeStart));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.DateTimeStart, dateTimeStart), cancellationToken);
             }
 
             if (dateTimeEnd != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.DateTimeEnd, dateTimeEnd));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.DateTimeEnd, dateTimeEnd), cancellationToken);
             }
 
             if (carId != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.CarId, carId));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.CarId, carId), cancellationToken);
             }
 
             if (userId != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.UserId, userId));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.UserId, userId), cancellationToken);
             }
 
             if (periodStatus != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.PeriodStatus, periodStatus));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.PeriodStatus, periodStatus), cancellationToken);
             }
 
             if (rentalPriceBYN != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.RentalPriceBYN, rentalPriceBYN));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.RentalPriceBYN, rentalPriceBYN), cancellationToken);
             }
 
-            return GetById(periodId);
+            return await GetByIdAsync(periodId, cancellationToken);
         }
     }
 }

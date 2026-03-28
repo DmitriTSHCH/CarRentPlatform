@@ -7,11 +7,12 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface ICarReservationDataRepository
     {
-        public CarReservationData Add(CarReservationData carReservationData);
-        public CarReservationData Update(Guid carId, CarReservationStatus? carReservationStatus, TimeSpan? serviceTime);
-        public CarReservationData GetById(Guid carId);
-        public List<CarReservationData> GetByFreePeriod(DateTime dateTimeStart, DateTime dateTimeEnd);
-        public List<CarReservationData> GetByOccupiedPeriod(DateTime dateTimeStart, DateTime dateTimeEnd);
-        public List<CarReservationData> GetByStatus(List<CarReservationStatus> carReservationStatuses);
+        public Task<CarReservationData?> AddAsync(CarReservationData carReservationData, CancellationToken cancellationToken = default);
+        public Task<CarReservationData?> UpdateAsync(Guid carId, CarReservationStatus? carReservationStatus, 
+                                         TimeSpan? serviceTime, CancellationToken cancellationToken = default);
+        public Task<CarReservationData?> GetByIdAsync(Guid carId, CancellationToken cancellationToken = default);
+        public Task<List<CarReservationData>> GetByFreePeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken = default);
+        public Task<List<CarReservationData>> GetByOccupiedPeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken = default);
+        public Task<List<CarReservationData>> GetByStatusAsync(List<CarReservationStatus> carReservationStatuses, CancellationToken cancellationToken = default);
     }
 }

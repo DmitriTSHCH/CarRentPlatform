@@ -16,15 +16,15 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public CarModel Add(CarModel carModel)
+        public async Task<CarModel?> AddAsync(CarModel carModel, CancellationToken cancellationToken = default)
         {
-            _dbContext.Add(carModel);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(carModel, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(carModel.ModelId);
+            return await GetByIdAsync(carModel.ModelId, cancellationToken);
         }
 
-        public List<CarModel> GetByFilter(List<string>? brands, List<string>? models)
+        public async Task<List<CarModel>> GetByFilterAsync(List<string>? brands, List<string>? models, CancellationToken cancellationToken = default)
         {
             var builder = _dbContext.CarModels
                 .AsNoTracking();
@@ -39,33 +39,33 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder = builder.Where(m => models.Contains(m.Model));
             }
                 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public CarModel GetById(Guid modelId)
+        public async Task<CarModel?> GetByIdAsync(Guid modelId, CancellationToken cancellationToken = default)
         {
-            return _dbContext.CarModels
+            return await _dbContext.CarModels
                 .Include(m => m.ModelSpecifications)
                 .AsNoTracking()
-                .FirstOrDefault(m => m.ModelId == modelId);
+                .FirstOrDefaultAsync(m => m.ModelId == modelId, cancellationToken);
         }
 
-        public CarModel Update(Guid modelId, string? brand, string? model )
+        public async Task<CarModel?> UpdateAsync(Guid modelId, string? brand, string? model, CancellationToken cancellationToken = default)
         {
             var builder = _dbContext.CarModels
                 .Where(m => m.ModelId == modelId);
 
             if (brand != null)
             {
-                builder.ExecuteUpdate(m => m.SetProperty(p => p.Brand, brand));
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.Brand, brand), cancellationToken);
             }
 
             if (model != null)
             {
-                builder.ExecuteUpdate(m => m.SetProperty(p => p.Model, model));
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.Model, model), cancellationToken);
             }
 
-            return GetById(modelId);
+            return await GetByIdAsync(modelId, cancellationToken);
         }
     }
 }

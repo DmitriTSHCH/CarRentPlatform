@@ -7,9 +7,9 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface ICarPriceDataRepository
     {
-        public CarPriceData Add(CarPriceData carPriceData);
-        public CarPriceData Update(Guid carId, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN);
-        public CarPriceData GetById(Guid carId);
-        public List<CarPriceData> GetByFilter(decimal? minPricePerDayBYN, decimal? maxPricePerDayBYN, decimal? minLateReturnPenaltyPerDayBYN, decimal? maxLateReturnPenaltyPerDayBYN);
+        public Task<CarPriceData?> AddAsync(CarPriceData carPriceData, CancellationToken cancellationToken = default);
+        public Task<CarPriceData?> UpdateAsync(Guid carId, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN, CancellationToken cancellationToken = default);
+        public Task<CarPriceData?> GetByIdAsync(Guid carId, CancellationToken cancellationToken = default);
+        public Task<List<CarPriceData>> GetByFilterAsync(decimal? minPricePerDayBYN, decimal? maxPricePerDayBYN, decimal? minLateReturnPenaltyPerDayBYN, decimal? maxLateReturnPenaltyPerDayBYN, CancellationToken cancellationToken = default);
     }
 }

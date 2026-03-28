@@ -16,23 +16,23 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public UserCondition Add(UserCondition userCondition)
+        public async Task<UserCondition?> AddAsync(UserCondition userCondition, CancellationToken cancellationToken)
         {
-            _dbContext.Add(userCondition);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(userCondition, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(userCondition.UserId);
+            return await GetByIdAsync(userCondition.UserId, cancellationToken);
         }
 
-        public UserCondition GetById(Guid userId)
+        public async Task<UserCondition?> GetByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return _dbContext.UserConditions
+            return await _dbContext.UserConditions
                 .AsNoTracking()
-                .FirstOrDefault(r => r.UserId == userId);
+                .FirstOrDefaultAsync(r => r.UserId == userId, cancellationToken);
         }
 
-        public List<UserCondition> GetByFilter(bool? isVerified, List<UserStatus>? userStatuses, 
-                                               decimal? minRating, decimal? maxRating)
+        public async Task<List<UserCondition>> GetByFilterAsync(bool? isVerified, List<UserStatus>? userStatuses, 
+                                               decimal? minRating, decimal? maxRating, CancellationToken cancellationToken)
         {
             var builder = _dbContext.UserConditions
                 .AsNoTracking();
@@ -57,58 +57,58 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder.Where(u => u.Rating <= maxRating);
             }
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public UserCondition Update(Guid userId, bool? isVerified,
-                           UserStatus? userStatus, decimal? rating)
+        public async Task<UserCondition?> UpdateAsync(Guid userId, bool? isVerified,
+                           UserStatus? userStatus, decimal? rating, CancellationToken cancellationToken)
         {
             var builder = _dbContext.UserConditions
                 .Where(m => m.UserId == userId);
 
             if (isVerified != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.IsVerified, isVerified));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.IsVerified, isVerified), cancellationToken);
             }
 
             if (userStatus != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.UserStatus, userStatus));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.UserStatus, userStatus), cancellationToken);
             }
 
             if (rating != null)
             {
-                builder.ExecuteUpdate(r => r.SetProperty(p => p.Rating, rating));
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.Rating, rating), cancellationToken);
             }
 
-            return GetById(userId);
+            return await GetByIdAsync(userId, cancellationToken);
         }
 
-        public UserCondition UpdateRating(Guid userId, decimal rating)
+        public async Task<UserCondition?> UpdateRatingAsync(Guid userId, decimal rating, CancellationToken cancellationToken)
         {
             _dbContext.UserConditions
                 .Where(m => m.UserId == userId)
-                .ExecuteUpdate(r => r.SetProperty(p => p.Rating, rating));
+                .ExecuteUpdateAsync(r => r.SetProperty(p => p.Rating, rating), cancellationToken);
 
-            return GetById(userId);
+            return await GetByIdAsync(userId, cancellationToken);
         }
 
-        public UserCondition UpdateStatus(Guid userId, UserStatus userStatus)
+        public async Task<UserCondition?> UpdateStatusAsync(Guid userId, UserStatus userStatus, CancellationToken cancellationToken)
         {
             _dbContext.UserConditions
                 .Where(m => m.UserId == userId)
-                .ExecuteUpdate(r => r.SetProperty(p => p.UserStatus, userStatus));
+                .ExecuteUpdateAsync(r => r.SetProperty(p => p.UserStatus, userStatus), cancellationToken);
 
-            return GetById(userId);
+            return await GetByIdAsync(userId, cancellationToken);
         }
 
-        public UserCondition UpdateVerification(Guid userId, bool isVerified)
+        public async Task<UserCondition?> UpdateVerificationAsync(Guid userId, bool isVerified, CancellationToken cancellationToken)
         {
             _dbContext.UserConditions
                 .Where(m => m.UserId == userId)
-                .ExecuteUpdate(r => r.SetProperty(p => p.IsVerified, isVerified));
+                .ExecuteUpdateAsync(r => r.SetProperty(p => p.IsVerified, isVerified), cancellationToken);
 
-            return GetById(userId);
+            return await GetByIdAsync(userId, cancellationToken);
         }
     }
 }

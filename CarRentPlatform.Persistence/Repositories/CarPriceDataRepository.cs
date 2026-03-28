@@ -16,15 +16,18 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public CarPriceData Add(CarPriceData carPriceData)
+        public async Task<CarPriceData?> AddAsync(CarPriceData carPriceData, CancellationToken cancellationToken = default)
         {
-            _dbContext.Add(carPriceData);
-            _dbContext.SaveChanges();
+            _dbContext.AddAsync(carPriceData, cancellationToken);
+            _dbContext.SaveChangesAsync(cancellationToken);
 
-            return GetById(carPriceData.CarId);
+            return await GetByIdAsync(carPriceData.CarId, cancellationToken);
         }
 
-        public List<CarPriceData> GetByFilter(decimal? minPricePerDayBYN, decimal? maxPricePerDayBYN, decimal? minLateReturnPenaltyPerDayBYN, decimal? maxLateReturnPenaltyPerDayBYN)
+        public async Task<List<CarPriceData>> GetByFilterAsync(decimal? minPricePerDayBYN, decimal? maxPricePerDayBYN,
+                                              decimal? minLateReturnPenaltyPerDayBYN,
+                                              decimal? maxLateReturnPenaltyPerDayBYN,
+                                              CancellationToken cancellationToken = default)
         {
             var builder = _dbContext.CarPriceDatas
                 .AsNoTracking();
@@ -49,32 +52,32 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder = builder.Where(p => p.LateReturnPenaltyPerDayBYN <= maxLateReturnPenaltyPerDayBYN);
             }
 
-            return builder.ToList();
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public CarPriceData GetById(Guid carId)
+        public async Task<CarPriceData?> GetByIdAsync(Guid carId, CancellationToken cancellationToken = default)
         {
-            return _dbContext.CarPriceDatas
+            return await _dbContext.CarPriceDatas
                 .AsNoTracking()
-                .FirstOrDefault(m => m.CarId == carId);
+                .FirstOrDefaultAsync(m => m.CarId == carId, cancellationToken);
         }
 
-        public CarPriceData Update(Guid carId, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN)
+        public async Task<CarPriceData?> UpdateAsync(Guid carId, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN, CancellationToken cancellationToken = default)
         {
             var builder = _dbContext.CarPriceDatas
                 .Where(m => m.CarId == carId);
 
             if (pricePerDayBYN != null)
             {
-                builder.ExecuteUpdate(m => m.SetProperty(p => p.PricePerDayBYN, pricePerDayBYN));
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.PricePerDayBYN, pricePerDayBYN), cancellationToken);
             }
 
             if (lateReturnPenaltyPerDayBYN != null)
             {
-                builder.ExecuteUpdate(m => m.SetProperty(p => p.LateReturnPenaltyPerDayBYN, lateReturnPenaltyPerDayBYN));
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.LateReturnPenaltyPerDayBYN, lateReturnPenaltyPerDayBYN), cancellationToken);
             }
 
-            return GetById(carId);
+            return await GetByIdAsync(carId, cancellationToken);
         }
     }
 }
