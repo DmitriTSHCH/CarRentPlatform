@@ -15,6 +15,6 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
         public Task<string?> GetEmailByIdAsync(Guid userId, CancellationToken cancellationToken = default);
         public Task<Guid?> GetIdByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken = default);
         public Task<Guid?> GetIdByEmailAsync(string email, CancellationToken cancellationToken = default);
-        public Task<bool> IsCorrectPasswordAsync(string phoneNumber, string hashedPassword, CancellationToken cancellationToken = default);
+        public Task<string?> GetHashedPasswordAsync(string? phoneNumber, string? email, CancellationToken cancellationToken = default);
     }
 }

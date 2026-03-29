@@ -7,9 +7,17 @@ namespace CarRentPlatform.Logic.Models
 {
     public class User
     {
-        public Guid UserId { get; set; }
-        public UserDocumentsData UserDocumentsData { get; set; }
-        public UserCondition UserCondition { get; set; }
-        public List<RentalPeriod> Bookings { get; set; } = new();
+        public Guid UserId { get; set; } = Guid.NewGuid();
+
+        private readonly UserDocumentsData _userDocumentsData;
+        private readonly UserCondition _userCondition;
+        private readonly List<RentalPeriod> _bookings = new();
+
+        private readonly DateTime _dateTimeCreation = DateTime.UtcNow;
+
+        public User()
+        {
+
+        }
     }
 }

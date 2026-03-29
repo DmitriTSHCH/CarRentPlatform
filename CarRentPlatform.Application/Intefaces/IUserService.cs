@@ -7,12 +7,12 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace CarRentPlatform.Application.Intefaces
 {
-    internal interface IUserService
+    public interface IUserService
     {
-        public Task Registration(string phoneNumber, string email, string password,
+        public Task<bool> Registration(string phoneNumber, string email, string password,
                                  string firstName, string lastName, string passportNumber,
-                                 string driverLicenseNumber, DriverLicenseCategoryFlags DriverLicenseCategory,
-                                 DateOnly LicenseExpirationDate, CancellationToken cancellationToken);
+                                 string driverLicenseNumber, DriverLicenseCategoryFlags driverLicenseCategory,
+                                 DateOnly licenseExpirationDate, CancellationToken cancellationToken);
         public Task<JwtSecurityToken> Login(string phoneNumber, string password, CancellationToken cancellationToken);
     }
 }

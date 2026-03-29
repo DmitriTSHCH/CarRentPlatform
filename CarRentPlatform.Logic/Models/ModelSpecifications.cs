@@ -10,31 +10,36 @@ namespace CarRentPlatform.Logic.Models
     public enum CarType { Sedan, Hatchback, Liftback, StationWagon, Coupe, SUV, Crossover, Pickup, Minivan, Van, Convertible, Limousine, MuscleCar, Other }
     public class ModelSpecifications
     {
-        public Guid ModelId { get; set; }
-        public Fuel Fuel { get; set; }
+        public Guid ModelId { get; private set; }
+        public Fuel Fuel { get; private set; }
 
         [Range(1, int.MaxValue)]
-        public int NumberOfSeatsWithDriver { get; set; }
+        public int NumberOfSeatsWithDriver { get; private set; }
 
         [Range(0.0, double.MaxValue)]
-        public float TrunkVoluem { get; set; }
+        public float TrunkVoluem { get; private set; }
 
         [Range(0.0, double.MaxValue)]
-        public float TankCapacity { get; set; }
+        public float TankCapacity { get; private set; }
         public TankUnit TankUnit => Fuel == Fuel.electricity ? TankUnit.kWh : TankUnit.liter ;
 
         [Range(0.0, double.MaxValue)]
-        public float CityConsumptionPer100km { get; set; }
+        public float CityConsumptionPer100km { get; private set; }
 
         [Range(0.0, double.MaxValue)]
-        public float HighwayConsumptionPer100km { get; set; }
+        public float HighwayConsumptionPer100km { get; private set; }
 
         [Range(0.0, double.MaxValue)]
-        public float CityRangeKm { get; set; }
+        public float CityRangeKm { get; private set; }
 
         [Range(0.0, double.MaxValue)]
-        public float HighwayRangeKm { get; set; }
-        public CarType CarType { get; set; }
-        public bool IsAutomaticTransmission { get; set; }
+        public float HighwayRangeKm { get; private set; }
+        public CarType CarType { get; private set; }
+        public bool IsAutomaticTransmission { get; private set; }
+
+        public ModelSpecifications()
+        {
+
+        }
     }
 }

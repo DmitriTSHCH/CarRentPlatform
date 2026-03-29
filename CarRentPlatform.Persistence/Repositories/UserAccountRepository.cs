@@ -21,42 +21,49 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext.AddAsync(userAccount, cancellationToken);
             _dbContext.SaveChangesAsync(cancellationToken);
 
-            return await _dbContext.UserAccounts.AnyAsync(a => a.UserId == userAccount.UserId, cancellationToken);
+            return await _dbContext.UserAccounts
+                .AnyAsync(a => a.UserId == userAccount.UserId, cancellationToken);
         }
 
         public async Task<string?> GetEmailByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             return ( await _dbContext.UserAccounts
-                .FirstOrDefaultAsync(a => a.UserId == userId, cancellationToken))
+                .FirstOrDefaultAsync(a => a.UserId == userId, cancellationToken))?
                 .Email;
+        }
+
+        public async Task<string?> GetHashedPasswordAsync(string? phoneNumber, string? email, CancellationToken cancellationToken = default)
+        {
+            if (phoneNumber == null && email == null)
+            { 
+                return null;
+            }
+            return (await _dbContext.UserAccounts
+                .FirstOrDefaultAsync(a => 
+                (phoneNumber != null && a.PhoneNumber == phoneNumber) || 
+                (email !=null && a.Email == email), cancellationToken))?
+                .HashedPassword;
         }
 
         public async Task<Guid?> GetIdByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return (await _dbContext.UserAccounts
-                .FirstOrDefaultAsync(a => a.Email == email, cancellationToken))
+                .FirstOrDefaultAsync(a => a.Email == email, cancellationToken))?
                 .UserId;
         }
 
         public async Task<Guid?> GetIdByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken)
         {
             return (await _dbContext.UserAccounts
-                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber, cancellationToken))
+                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber, cancellationToken))?
                 .UserId;
         }
 
         public async Task<string?> GetPhoneNumberByIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             return (await _dbContext.UserAccounts
-                .FirstOrDefaultAsync(a => a.UserId == userId, cancellationToken))
+                .FirstOrDefaultAsync(a => a.UserId == userId, cancellationToken))?
                 .PhoneNumber;
-        }
-
-        public async Task<bool> IsCorrectPasswordAsync(string phoneNumber, string hashedPassword, CancellationToken cancellationToken)
-        {
-            return hashedPassword == (await _dbContext.UserAccounts
-                .FirstOrDefaultAsync(a => a.PhoneNumber == phoneNumber, cancellationToken))?
-                .HashedPassword;
         }
 
         public async Task<string?> UpdateEmailAsync(Guid userId, string email, CancellationToken cancellationToken)
@@ -74,7 +81,8 @@ namespace CarRentPlatform.Persistence.Repositories
                 .Where(m => m.UserId == userId)
                 .ExecuteUpdateAsync(r => r.SetProperty(p => p.HashedPassword, hashedPassword), cancellationToken);
 
-            return await _dbContext.UserAccounts.AnyAsync(a => a.UserId == userId, cancellationToken);
+            return await _dbContext.UserAccounts
+                .AnyAsync(a => a.UserId == userId, cancellationToken);
         }
 
         public async Task<string?> UpdatePhoneNumberAsync(Guid userId, string phoneNumber, CancellationToken cancellationToken)
