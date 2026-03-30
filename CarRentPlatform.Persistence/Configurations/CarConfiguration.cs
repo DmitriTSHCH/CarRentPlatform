@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CarRentPlatform.Logic.Models;
 using Microsoft.EntityFrameworkCore;
-using CarRentPlatform.Logic.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
+using System.Text;
 
 namespace CarRentPlatform.Persistence.Configurations
 {
@@ -13,7 +15,7 @@ namespace CarRentPlatform.Persistence.Configurations
         {
             builder.HasKey(c => c.CarId);
 
-            builder.HasOne(c => c.CarModel)
+            builder.HasOne(c => c.Model)
                 .WithMany()
                 .HasForeignKey(c => c.ModelId)
                 .OnDelete(DeleteBehavior.SetNull);

@@ -16,15 +16,110 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Car?> AddAsync(Car car, CancellationToken cancellationToken)
+        public async Task<Car?> AddAsync(Car car, CarPriceData carPriceData, CarReservationData carReservationData, CancellationToken cancellationToken)
         {
             _dbContext.AddAsync(car, cancellationToken);
+            _dbContext.AddAsync(carPriceData, cancellationToken);
+            _dbContext.AddAsync(carReservationData, cancellationToken);
             _dbContext.SaveChangesAsync(cancellationToken);
 
-            return await GetByIdAsync(car.CarId, cancellationToken);
+            return await GetCarByIdAsync(car.CarId, cancellationToken);
         }
 
-        public async Task<List<Car>> GetByFilterAsync(List<string>? brands, List<string>? models, 
+        public Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, decimal? pricePerDayBYN,
+                                      decimal? lateReturnPenaltyPerDayBYN, CarReservationStatus? carReservationStatus,
+                                      TimeSpan? serviceTime, CancellationToken cancellationToken = default)
+        {
+            UpdateCarPriceDataAsync(carId, pricePerDayBYN, lateReturnPenaltyPerDayBYN, cancellationToken);
+            UpdateCarReservationDataAsync(carId, carReservationStatus, serviceTime, cancellationToken);
+            return UpdateCarAsync(carId, modelId, carColor, cancellationToken);
+        }
+
+        public async Task<Car?> UpdateCarAsync(Guid carId, Guid? modelId, CarColor? carColor, CancellationToken cancellationToken)
+        {
+            var builder = _dbContext.Cars
+                .Where(m => m.CarId == carId);
+
+            if (modelId != null)
+            {
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.ModelId, modelId), cancellationToken);
+            }
+
+            if (carColor != null)
+            {
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.CarColor, carColor), cancellationToken);
+            }
+
+            return await GetCarByIdAsync(carId, cancellationToken);
+        }
+
+        public async Task<CarPriceData?> UpdateCarPriceDataAsync(Guid carId, decimal? pricePerDayBYN,
+                                                                 decimal? lateReturnPenaltyPerDayBYN,
+                                                                 CancellationToken cancellationToken = default)
+        {
+            var builder = _dbContext.CarPriceDatas
+                .Where(m => m.CarId == carId);
+
+            if (pricePerDayBYN != null)
+            {
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.PricePerDayBYN, pricePerDayBYN), cancellationToken);
+            }
+
+            if (lateReturnPenaltyPerDayBYN != null)
+            {
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.LateReturnPenaltyPerDayBYN, lateReturnPenaltyPerDayBYN), cancellationToken);
+            }
+
+            return await GetCarPriceDataByIdAsync(carId, cancellationToken);
+        }
+
+        public async Task<CarReservationData?> UpdateCarReservationDataAsync(Guid carId,
+                                                                             CarReservationStatus? carReservationStatus,
+                                                                             TimeSpan? serviceTime,
+                                                                             CancellationToken cancellationToken)
+        {
+            var builder = _dbContext.CarReservationDatas
+                .Where(m => m.CarId == carId);
+
+            if (carReservationStatus != null)
+            {
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.CarReservationStatus, carReservationStatus), cancellationToken);
+            }
+
+            if (serviceTime != null)
+            {
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.ServiceTime, serviceTime), cancellationToken);
+            }
+
+            return await GetCarReservationDataByIdAsync(carId, cancellationToken);
+        }
+
+        public async Task<Car?> GetCarByIdAsync(Guid carId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Cars
+                .Include(c => c.Model)
+                .Include(c => c.CarPriceData)
+                .Include(c => c.CarReservationData)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.CarId == carId, cancellationToken);
+        }
+
+        public async Task<CarPriceData?> GetCarPriceDataByIdAsync(Guid carId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CarPriceDatas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.CarId == carId, cancellationToken);
+        }
+
+        public async Task<CarReservationData?> GetCarReservationDataByIdAsync(Guid carId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.CarReservationDatas
+                .Include(r => r.OccupiedPeriods)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.CarId == carId, cancellationToken);
+        }
+
+        public async Task<List<Car>> GetCarByFilterAsync(List<string>? brands, List<string>? models, 
                                                 List<CarColor>? carColors, CancellationToken cancellationToken)
         {
             var builder = _dbContext.Cars
@@ -37,22 +132,22 @@ namespace CarRentPlatform.Persistence.Repositories
 
             if (brands != null)
             {
-                builder = builder.Where(c => brands.Contains(c.CarModel.Brand));
+                builder = builder.Where(c => brands.Contains(c.Model.Brand));
             }
 
             if (models != null)
             {
-                builder = builder.Where(c => models.Contains(c.CarModel.Model));
+                builder = builder.Where(c => models.Contains(c.Model.Model));
             }
 
-            builder.Include(c => c.CarModel)
+            builder.Include(c => c.Model)
                 .Include(c => c.CarPriceData)
                 .Include(c => c.CarReservationData);
 
             return await builder.ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Car>> GetByFilterAsync(List<string>? brands, List<string>? models, List<CarColor>? carColors,
+        public async Task<List<Car>> GetCarByFilterAsync(List<string>? brands, List<string>? models, List<CarColor>? carColors,
                                      List<CarType>? carTypes, List<Fuel>? fuels, int? minNumberOfSeatsWithDriver,
                                      float? minTrunkVoluem, float? minTankCapacity, float? maxCityConsumptionPer100km,
                                      float? maxHighwayConsumptionPer100km, float? minCityRangeKm,
@@ -70,57 +165,57 @@ namespace CarRentPlatform.Persistence.Repositories
 
             if (brands != null)
             {
-                builder = builder.Where(c => brands.Contains(c.CarModel.Brand));
+                builder = builder.Where(c => brands.Contains(c.Model.Brand));
             }
 
             if (models != null)
             {
-                builder = builder.Where(c => models.Contains(c.CarModel.Model));
+                builder = builder.Where(c => models.Contains(c.Model.ModelName));
             }
 
             if (carTypes != null)
             {
-                builder = builder.Where(c => carTypes.Contains(c.CarModel.ModelSpecifications.CarType));
+                builder = builder.Where(c => carTypes.Contains(c.Model.ModelSpecifications.CarType));
             }
 
             if (fuels != null)
             {
-                builder = builder.Where(c => fuels.Contains(c.CarModel.ModelSpecifications.Fuel));
+                builder = builder.Where(c => fuels.Contains(c.Model.ModelSpecifications.Fuel));
             }
 
             if (minNumberOfSeatsWithDriver != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.NumberOfSeatsWithDriver >= minNumberOfSeatsWithDriver);
+                builder = builder.Where(c => c.Model.ModelSpecifications.NumberOfSeatsWithDriver >= minNumberOfSeatsWithDriver);
             }
 
             if (minTrunkVoluem != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.TrunkVoluem >= minTrunkVoluem);
+                builder = builder.Where(c => c.Model.ModelSpecifications.TrunkVoluem >= minTrunkVoluem);
             }
 
             if (minTankCapacity != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.TankCapacity >= minTankCapacity);
+                builder = builder.Where(c => c.Model.ModelSpecifications.TankCapacity >= minTankCapacity);
             }
 
             if (maxCityConsumptionPer100km != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.CityConsumptionPer100km <= maxCityConsumptionPer100km);
+                builder = builder.Where(c => c.Model.ModelSpecifications.CityConsumptionPer100km <= maxCityConsumptionPer100km);
             }
 
             if (maxHighwayConsumptionPer100km != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.HighwayConsumptionPer100km <= maxHighwayConsumptionPer100km);
+                builder = builder.Where(c => c.Model.ModelSpecifications.HighwayConsumptionPer100km <= maxHighwayConsumptionPer100km);
             }
 
             if (minCityRangeKm != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.CityRangeKm >= minCityRangeKm);
+                builder = builder.Where(c => c.Model.ModelSpecifications.CityRangeKm >= minCityRangeKm);
             }
 
             if (minHighwayRangeKm != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.HighwayRangeKm >= minHighwayRangeKm);
+                builder = builder.Where(c => c.Model.ModelSpecifications.HighwayRangeKm >= minHighwayRangeKm);
             }
 
             if (maxPricePerDayBYN != null)
@@ -130,7 +225,7 @@ namespace CarRentPlatform.Persistence.Repositories
 
             if (isAutomaticTransmission != null)
             {
-                builder = builder.Where(c => c.CarModel.ModelSpecifications.IsAutomaticTransmission == isAutomaticTransmission);
+                builder = builder.Where(c => c.Model.ModelSpecifications.IsAutomaticTransmission == isAutomaticTransmission);
             }
 
             if (dateTimeStartNewPeriod != null && dateTimeEndNewPeriod != null)
@@ -141,39 +236,69 @@ namespace CarRentPlatform.Persistence.Repositories
                 .Any(p => dateTimeStartNewPeriod < (p.DateTimeEnd + c.CarReservationData.ServiceTime) && dateTimeEndNewPeriod > (p.DateTimeStart - c.CarReservationData.ServiceTime)));
             }
 
-            builder.Include(c => c.CarModel)
+            builder.Include(c => c.Model)
                 .Include(c => c.CarPriceData)
                 .Include(c => c.CarReservationData);
 
             return await builder.ToListAsync(cancellationToken);
         }
 
-        public async Task<Car?> GetByIdAsync(Guid carId, CancellationToken cancellationToken)
+        public async Task<List<CarPriceData>> GetCarPriceDataByFilterAsync(decimal? minPricePerDayBYN, decimal? maxPricePerDayBYN,
+                                              decimal? minLateReturnPenaltyPerDayBYN,
+                                              decimal? maxLateReturnPenaltyPerDayBYN,
+                                              CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Cars
-                .Include(c => c.CarModel)
-                .Include(c => c.CarPriceData)
-                .Include(c => c.CarReservationData)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.CarId == carId, cancellationToken);
+            var builder = _dbContext.CarPriceDatas
+                .AsNoTracking();
+
+            if (minPricePerDayBYN != null)
+            {
+                builder = builder.Where(p => p.PricePerDayBYN >= minPricePerDayBYN);
+            }
+
+            if (maxPricePerDayBYN != null)
+            {
+                builder = builder.Where(p => p.PricePerDayBYN <= maxPricePerDayBYN);
+            }
+
+            if (minLateReturnPenaltyPerDayBYN != null)
+            {
+                builder = builder.Where(p => p.LateReturnPenaltyPerDayBYN >= minLateReturnPenaltyPerDayBYN);
+            }
+
+            if (maxLateReturnPenaltyPerDayBYN != null)
+            {
+                builder = builder.Where(p => p.LateReturnPenaltyPerDayBYN <= maxLateReturnPenaltyPerDayBYN);
+            }
+
+            return await builder.ToListAsync(cancellationToken);
         }
 
-        public async Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, CancellationToken cancellationToken)
+        public async Task<List<CarReservationData>> GetCarReservationDataByFreePeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken)
         {
-            var builder = _dbContext.Cars
-                .Where(m => m.CarId == carId);
+            return await _dbContext.CarReservationDatas
+                .Where(c => !c
+                .OccupiedPeriods
+                .Any(p => dateTimeStart < (p.DateTimeEnd + c.ServiceTime) && dateTimeEnd > (p.DateTimeStart - c.ServiceTime)))
+                .ToListAsync(cancellationToken);
+        }
 
-            if (modelId != null)
-            {
-                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.ModelId, modelId), cancellationToken);
-            }
+        public async Task<List<CarReservationData>> GetCarReservationDataByOccupiedPeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken)
+        {
+            return await _dbContext.CarReservationDatas
+                .Where(c => c
+                .OccupiedPeriods
+                .Any(p => dateTimeStart < (p.DateTimeEnd + c.ServiceTime) && dateTimeEnd > (p.DateTimeStart - c.ServiceTime)))
+                .ToListAsync(cancellationToken);
+        }
 
-            if (carColor != null)
-            {
-                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.CarColor, carColor), cancellationToken);
-            }
-
-            return await GetByIdAsync(carId, cancellationToken);
+        public async Task<List<CarReservationData>> GetCarReservationDataByStatusAsync(List<CarReservationStatus> carReservationStatuses, CancellationToken cancellationToken)
+        {
+            return await _dbContext.CarReservationDatas
+                .Include(r => r.OccupiedPeriods)
+                .AsNoTracking()
+                .Where(r => carReservationStatuses.Contains(r.CarReservationStatus))
+                .ToListAsync(cancellationToken);
         }
     }
 }

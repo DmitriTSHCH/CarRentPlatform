@@ -11,10 +11,10 @@ namespace CarRentPlatform.Logic.Models
         public Guid ModelId { get; private set; }
         public CarColor CarColor { get; private set; }
 
-        private readonly CarModel _carModel;
-        private readonly CarPriceData _carPriceData;
-        private readonly CarReservationData _carReservationData;
-        private readonly DateTime _dateTimeCreation = DateTime.UtcNow;
+        public Model Model { get; private set; }
+        public CarPriceData CarPriceData { get; private set; }
+        public CarReservationData CarReservationData { get; private set; }
+        public DateTime DateTimeCreation { get; private set; } = DateTime.UtcNow;
 
         public Car()
         {

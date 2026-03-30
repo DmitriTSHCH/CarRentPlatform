@@ -7,28 +7,47 @@ using System.Text;
 
 namespace CarRentPlatform.Persistence.Repositories
 {
-    public class ModelSpecificationsRepository : IModelSpecificationsRepository
+    public class ModelRepository : IModelRepository
     {
         private readonly CarRentPlatformDbContext _dbContext;
 
-        public ModelSpecificationsRepository(CarRentPlatformDbContext dbContext)
+        public ModelRepository(CarRentPlatformDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<ModelSpecifications?> AddAsync(ModelSpecifications modelSpecifications, CancellationToken cancellationToken)
+        public async Task<Model?> AddAsync(Model carModel, ModelSpecifications modelSpecifications, CancellationToken cancellationToken = default)
         {
             _dbContext.AddAsync(modelSpecifications, cancellationToken);
+            _dbContext.AddAsync(carModel, cancellationToken);
             _dbContext.SaveChangesAsync(cancellationToken);
 
-            return await GetByIdAsync(modelSpecifications.ModelId, cancellationToken);
+            return await GetModelByIdAsync(carModel.ModelId, cancellationToken);
         }
 
-        public async Task<List<ModelSpecifications>> GetByFilterAsync(List<Fuel>? fuels, List<CarType>? carTypes,
+        public async Task<List<Model>> GetModelByFilterAsync(List<string>? brands, List<string>? models, CancellationToken cancellationToken = default)
+        {
+            var builder = _dbContext.CarModels
+                .AsNoTracking();
+
+            if (brands != null)
+            {
+                builder = builder.Where(m => brands.Contains(m.Brand));
+            }
+
+            if (models != null)
+            {
+                builder = builder.Where(m => models.Contains(m.ModelName));
+            }
+                
+            return await builder.ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<ModelSpecifications>> GetModelSpecificationsByFilterAsync(List<Fuel>? fuels, List<CarType>? carTypes,
                                                      int? minNumberOfSeatsWithDriver, float? minTrunkVoluem,
                                                      float? minTankCapacity, float? maxCityConsumptionPer100km,
                                                      float? maxHighwayConsumptionPer100km, float? minCityRangeKm,
-                                                     float? minHighwayRangeKm, bool? isAutomaticTransmission, 
+                                                     float? minHighwayRangeKm, bool? isAutomaticTransmission,
                                                      CancellationToken cancellationToken)
         {
             var builder = _dbContext.ModelSpecifications
@@ -87,14 +106,40 @@ namespace CarRentPlatform.Persistence.Repositories
             return await builder.ToListAsync(cancellationToken);
         }
 
-        public async Task<ModelSpecifications?> GetByIdAsync(Guid modelId, CancellationToken cancellationToken)
+        public async Task<Model?> GetModelByIdAsync(Guid modelId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.CarModels
+                .Include(m => m.ModelSpecifications)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.ModelId == modelId, cancellationToken);
+        }
+
+        public async Task<ModelSpecifications?> GetModelSpecificationsByIdAsync(Guid modelId, CancellationToken cancellationToken)
         {
             return await _dbContext.ModelSpecifications
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.ModelId == modelId, cancellationToken);
         }
 
-        public async Task<ModelSpecifications?> UpdateAsync(Guid modelId, Fuel? fuel, CarType? carType, int? numberOfSeatsWithDriver,
+
+        public async Task<Model?> UpdateModelAsync(Guid modelId, string? brand, string? model, CancellationToken cancellationToken = default)
+        {
+            var builder = _dbContext.CarModels
+                .Where(m => m.ModelId == modelId);
+
+            if (brand != null)
+            {
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.Brand, brand), cancellationToken);
+            }
+
+            if (model != null)
+            {
+                builder.ExecuteUpdateAsync(m => m.SetProperty(p => p.ModelName, model), cancellationToken);
+            }
+
+            return await GetModelByIdAsync(modelId, cancellationToken);
+        }
+        public async Task<ModelSpecifications?> UpdateSpecificationsAsync(Guid modelId, Fuel? fuel, CarType? carType, int? numberOfSeatsWithDriver,
                                           float? trunkVoluem, float? tankCapacity, float? cityConsumptionPer100km,
                                           float? highwayConsumptionPer100km, float? cityRangeKm, float? highwayRangeKm,
                                           bool? isAutomaticTransmission, CancellationToken cancellationToken)
@@ -152,7 +197,7 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.IsAutomaticTransmission, isAutomaticTransmission), cancellationToken);
             }
 
-            return await GetByIdAsync(modelId, cancellationToken);
+            return await GetModelSpecificationsByIdAsync(modelId, cancellationToken);
         }
     }
 }

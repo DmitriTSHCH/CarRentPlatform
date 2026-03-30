@@ -12,7 +12,7 @@ namespace CarRentPlatform.Persistence
     {
         private readonly IConfiguration _configuration;
         public DbSet<Car> Cars { get; }
-        public DbSet<CarModel> CarModels { get; }
+        public DbSet<Model> CarModels { get; }
         public DbSet<CarPriceData> CarPriceDatas { get; }
         public DbSet<CarReservationData> CarReservationDatas { get; }
         public DbSet<ModelSpecifications> ModelSpecifications { get; }
@@ -30,7 +30,7 @@ namespace CarRentPlatform.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CarConfiguration());
-            modelBuilder.ApplyConfiguration(new CarModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ModelConfiguration());
             modelBuilder.ApplyConfiguration(new CarPriceDataConfiguration());
             modelBuilder.ApplyConfiguration(new CarReservationDataConfiguration());
             modelBuilder.ApplyConfiguration(new ModelSpecificationsConfiguration());

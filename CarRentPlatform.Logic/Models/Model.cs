@@ -4,15 +4,15 @@ using System.Text;
 
 namespace CarRentPlatform.Logic.Models
 {
-    public class CarModel
+    public class Model
     {
         public Guid ModelId { get; private set; } = Guid.NewGuid();
         public string Brand { get; private set; }
-        public string Model { get; private set; }
+        public string ModelName { get; private set; }
 
-        private readonly ModelSpecifications _modelSpecifications;
+        public ModelSpecifications ModelSpecifications { get; private set; }
 
-        public CarModel()
+        public Model()
         {
 
         }

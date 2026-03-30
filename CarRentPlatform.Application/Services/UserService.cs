@@ -25,17 +25,17 @@ namespace CarRentPlatform.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> Registration(string phoneNumber, string email, string password, string firstName,
-                                       string lastName, string passportNumber, string driverLicenseNumber,
-                                       DriverLicenseCategoryFlags driverLicenseCategory, DateOnly licenseExpirationDate,
-                                       CancellationToken cancellationToken)
-        {
+        //public async Task<bool> Registration(string phoneNumber, string email, string password, string firstName,
+        //                               string lastName, string passportNumber, string driverLicenseNumber,
+        //                               DriverLicenseCategoryFlags driverLicenseCategory, DateOnly licenseExpirationDate,
+        //                               CancellationToken cancellationToken)
+        //{
             //var hasedPassword = _passwordHasher.Generate(password);
 
             //var user = new User();
             //var userDocuments = new UserDocumentsData(user.UserId, firstName, lastName, passportNumber,
             //                                          driverLicenseNumber, driverLicenseCategory, licenseExpirationDate);
             //return false;
-        }
+        //}
     }
 }

@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CarRentPlatform.Persistence.Configurations
 {
-    internal class CarModelConfiguration : IEntityTypeConfiguration<CarModel>
+    internal class ModelConfiguration : IEntityTypeConfiguration<Model>
     {
-        public void Configure(EntityTypeBuilder<CarModel> builder)
+        public void Configure(EntityTypeBuilder<Model> builder)
         {
             builder.HasKey(m => m.ModelId);
 
@@ -20,7 +20,7 @@ namespace CarRentPlatform.Persistence.Configurations
 
             builder.Property(m => m.Brand)
                 .HasMaxLength(50);
-            builder.Property(m => m.Model)
+            builder.Property(m => m.ModelName)
                 .HasMaxLength(50);
         }
     }

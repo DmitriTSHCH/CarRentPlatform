@@ -19,7 +19,7 @@ namespace CarRentPlatform.Logic.Models
         [Range(typeof(decimal), "0.0", "79228162514264337593543950335")]
         public decimal RentalPriceBYN { get; private set; }
 
-        private readonly DateTime _dateTimeCreation = DateTime.UtcNow;
+        public DateTime DateTimeCreation { get; private set; } = DateTime.UtcNow;
 
         public RentalPeriod()
         {

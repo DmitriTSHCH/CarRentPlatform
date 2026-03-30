@@ -9,11 +9,11 @@ namespace CarRentPlatform.Logic.Models
     {
         public Guid UserId { get; set; } = Guid.NewGuid();
 
-        private readonly UserDocumentsData _userDocumentsData;
-        private readonly UserCondition _userCondition;
-        private readonly List<RentalPeriod> _bookings = new();
+        public UserDocumentsData UserDocumentsData { get; private set; }
+        public UserCondition UserCondition { get; private set; }
+        public List<RentalPeriod> Bookings { get; private set; } = new();
 
-        private readonly DateTime _dateTimeCreation = DateTime.UtcNow;
+        public DateTime DateTimeCreation { get; private set; } = DateTime.UtcNow;
 
         public User()
         {
