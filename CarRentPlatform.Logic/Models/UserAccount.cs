@@ -15,5 +15,12 @@ namespace CarRentPlatform.Logic.Models
         {
 
         }
+        public UserAccount(Guid userId, string hashedPassword, string phoneNumber, string email)
+        {
+            UserId = userId;
+            HashedPassword = hashedPassword;
+            PhoneNumber = phoneNumber;
+            Email = email;
+        }
     }
 }
