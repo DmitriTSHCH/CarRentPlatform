@@ -2,10 +2,8 @@
 using CarRentPlatform.Application.Intefaces.Auth;
 using CarRentPlatform.Logic.Models;
 using CarRentPlatform.Logic.RepositoriesInterfaces;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace CarRentPlatform.Application.Services
@@ -23,9 +21,34 @@ namespace CarRentPlatform.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<JwtSecurityToken> Login(string phoneNumber, string password, CancellationToken cancellationToken)
+        public async Task<string> Login(string phoneNumber, string password, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var exeptionInvalidLoginPasword = new Exception("Неверный логин или пароль");
+
+            var hashedPassword = await _userRepository.GetHashedPasswordAsync(phoneNumber, null, cancellationToken);
+
+            if (hashedPassword == null)
+            {
+                throw exeptionInvalidLoginPasword;
+            }
+
+            var isVerified = _passwordHasher.Verify(password, hashedPassword);
+            
+            if (isVerified == false)
+            {
+                throw exeptionInvalidLoginPasword;
+            }
+
+            var userId = await _userRepository.GetIdByPhoneNumberAsync(phoneNumber);
+
+            if (userId == null)
+            {
+                throw exeptionInvalidLoginPasword;
+            }
+
+            var token = _jwtProvider.Generate(userId.Value);
+
+            return token;
         }
 
         public async Task<bool> Registration(string phoneNumber, string email, string password, string firstName,
@@ -43,7 +66,7 @@ namespace CarRentPlatform.Application.Services
 
             var addedUser = _userRepository.AddAsync(user, userDocuments, userAccount, userCondition, cancellationToken);
 
-            return await addedUser == user;
+            return (await addedUser == user && addedUser != null);
         }
     }
 }
