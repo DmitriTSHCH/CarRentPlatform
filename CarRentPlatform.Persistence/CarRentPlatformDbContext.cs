@@ -21,6 +21,7 @@ namespace CarRentPlatform.Persistence
         public DbSet<UserAccount> UserAccounts { get; }
         public DbSet<UserCondition> UserConditions { get; }
         public DbSet<UserDocumentsData> UserDocumentsDatas { get; }
+        public DbSet<Role> Roles { get; }
 
         public CarRentPlatformDbContext (IConfiguration configuration)
         {
@@ -39,6 +40,7 @@ namespace CarRentPlatform.Persistence
             modelBuilder.ApplyConfiguration(new UserAccountConfiguration());
             modelBuilder.ApplyConfiguration(new UserConditionConfiguration());
             modelBuilder.ApplyConfiguration(new UserDocumentsDataConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
             base.OnModelCreating(modelBuilder);
         }
 
