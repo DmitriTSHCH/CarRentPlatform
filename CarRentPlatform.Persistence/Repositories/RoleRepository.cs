@@ -34,7 +34,8 @@ namespace CarRentPlatform.Persistence.Repositories
 
         public async Task<Role> UpdateAsync(Guid roleId, string? name, PermissionsFlags? modelPermissions,
                                       PermissionsFlags? carsPermissions, PermissionsFlags? userPermissions,
-                                      PermissionsFlags? rentalPeriodPermissions, PermissionsFlags? rolePermissions,
+                                      PermissionsFlags? selfPermissions, PermissionsFlags? rentalPeriodPermissions, 
+                                      PermissionsFlags? rolePermissions,
                                       CancellationToken cancellationToken = default)
         {
             var builder = _dbContext.Roles
@@ -58,6 +59,11 @@ namespace CarRentPlatform.Persistence.Repositories
             if (userPermissions != null)
             {
                 builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.UserPermissions, userPermissions), cancellationToken);
+            }
+
+            if (selfPermissions != null)
+            {
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.SelfPermissions, selfPermissions), cancellationToken);
             }
 
             if (rentalPeriodPermissions != null)

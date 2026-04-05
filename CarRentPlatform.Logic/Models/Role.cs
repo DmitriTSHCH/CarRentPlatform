@@ -21,6 +21,7 @@ namespace CarRentPlatform.Logic.Models
         public PermissionsFlags ModelPermissions { get; set; }
         public PermissionsFlags CarsPermissions { get; set; }
         public PermissionsFlags UserPermissions { get; set; }
+        public PermissionsFlags SelfPermissions { get; set; }
         public PermissionsFlags RentalPeriodPermissions { get; set; }
         public PermissionsFlags RolePermissions { get; set; }
 
