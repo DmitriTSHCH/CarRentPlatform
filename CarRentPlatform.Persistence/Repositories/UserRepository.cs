@@ -339,5 +339,16 @@ namespace CarRentPlatform.Persistence.Repositories
 
             return await builder.ToListAsync(cancellationToken);
         }
+
+        public async Task<Role> GetRoleByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            {
+                return (await _dbContext.Users
+                    .Include(u => u.Role)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(r => r.UserId == userId, cancellationToken))
+                    .Role;
+            }
+        }
     }
 }

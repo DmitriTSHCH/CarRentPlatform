@@ -38,6 +38,7 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
         public Task<List<UserDocumentsData>> GetUserDocumentsDataByFilterAsync(string? firstName, string? lastName, string? passportNumber,
                                                          string? driverLicenseNumber, DriverLicenseCategoryFlags? driverLicenseCategory,
                                                          DateOnly? licenseExpirationDateWithin, CancellationToken cancellationToken = default);
+        public Task<Role> GetRoleByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
 
     }
 }
