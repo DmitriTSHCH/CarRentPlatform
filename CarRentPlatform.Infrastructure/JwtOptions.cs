@@ -4,11 +4,11 @@ using System.Text;
 
 namespace CarRentPlatform.Infrastructure
 {
-    internal class JwtOptions
+    public class JwtOptions
     {
         public int ExpireHours { get; set; }
-        public string SekretKey { get; set; }
-        public string Isuer { get; set; }
-        public string Aaudiens { get; set; }
+        public string SecretKey { get; set; }
+        public string Issuer { get; set; }
+        public string Audiens { get; set; }
     }
 }

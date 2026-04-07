@@ -18,6 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CarRentPlatform.Application\CarRentPlatform.Application.csproj" />
+    <ProjectReference Include="..\CarRentPlatform.Infrastructure\CarRentPlatform.Infrastructure.csproj" />
     <ProjectReference Include="..\CarRentPlatform.Logic\CarRentPlatform.Logic.csproj" />
     <ProjectReference Include="..\CarRentPlatform.Persistence\CarRentPlatform.Persistence.csproj" />
   </ItemGroup>

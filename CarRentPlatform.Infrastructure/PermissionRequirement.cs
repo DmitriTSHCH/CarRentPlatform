@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CarRentPlatform.Infrastructure
 {
-    internal class PermissionRequirement : IAuthorizationRequirement
+    public class PermissionRequirement : IAuthorizationRequirement
     {
         public PermissionsFlags ModelPermissions { get; set; }
         public PermissionsFlags CarsPermissions { get; set; }

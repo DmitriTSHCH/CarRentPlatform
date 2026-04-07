@@ -9,10 +9,9 @@ namespace CarRentPlatform.Logic.Models
     { 
         None = 0,
         Read = 1 << 0,
-        Get = 1 << 1,
-        Add = 1 << 2,
-        Updete = 1 << 3,
-        Delete = 1 << 4,
+        Create = 1 << 1,
+        Updete = 1 << 2,
+        Delete = 1 << 3,
     }
     public class Role
     {

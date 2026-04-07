@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace CarRentPlatform.Infrastructure
 {
-    internal class JwtProvider : IJwtProvider
+    public class JwtProvider : IJwtProvider
     {
         private readonly JwtOptions _options;
         public JwtProvider(IOptions<JwtOptions> options)
@@ -22,14 +22,14 @@ namespace CarRentPlatform.Infrastructure
         {
             Claim[] claims = [new("userId", userId.ToString())];
 
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SekretKey)),
+            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
                                                             SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(signingCredentials: signingCredentials,
                                              expires: DateTime.UtcNow.AddHours(_options.ExpireHours),
                                              claims: claims,
-                                             issuer: _options.Isuer,
-                                             audience: _options.Aaudiens);
+                                             issuer: _options.Issuer,
+                                             audience: _options.Audiens);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
