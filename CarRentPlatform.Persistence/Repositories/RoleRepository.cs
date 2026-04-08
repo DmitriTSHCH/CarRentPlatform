@@ -22,29 +22,24 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext.AddAsync(role, cancellationToken);
             _dbContext.SaveChangesAsync(cancellationToken);
 
-            return await GetByIdAsync(role.RoleId, cancellationToken);
+            return await GetByIdAsync(role.RoleNameId, cancellationToken);
         }
 
-        public async Task<Role> GetByIdAsync(Guid roleId, CancellationToken cancellationToken = default)
+        public async Task<Role> GetByIdAsync(RoleNameId roleNameId, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Roles
                 .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.RoleId == roleId, cancellationToken);
+                .FirstOrDefaultAsync(r => r.RoleNameId == roleNameId, cancellationToken);
         }
 
-        public async Task<Role> UpdateAsync(Guid roleId, string? name, PermissionsFlags? modelPermissions,
+        public async Task<Role> UpdateAsync(RoleNameId roleNameId, PermissionsFlags? modelPermissions,
                                       PermissionsFlags? carsPermissions, PermissionsFlags? userPermissions,
                                       PermissionsFlags? selfPermissions, PermissionsFlags? rentalPeriodPermissions, 
                                       PermissionsFlags? rolePermissions,
                                       CancellationToken cancellationToken = default)
         {
             var builder = _dbContext.Roles
-                .Where(r => r.RoleId == roleId);
-
-            if (name != null)
-            {
-                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.Name, name), cancellationToken);
-            }
+                .Where(r => r.RoleNameId == roleNameId);
 
             if (modelPermissions != null)
             {
