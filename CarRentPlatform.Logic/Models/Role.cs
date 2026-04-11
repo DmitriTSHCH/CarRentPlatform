@@ -10,7 +10,9 @@ namespace CarRentPlatform.Logic.Models
         User = 1,
         Admin = 2,
         Moderator = 3,
-        Operator = 4
+        Operator = 4,
+        CarManager = 5,
+        UserManager = 6,
     }
 
     [Flags]

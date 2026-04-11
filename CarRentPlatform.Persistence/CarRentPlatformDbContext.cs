@@ -1,7 +1,10 @@
-﻿using CarRentPlatform.Logic.Models;
+﻿using CarRentPlatform.Infrastructure;
+using CarRentPlatform.Logic.Models;
 using CarRentPlatform.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +14,7 @@ namespace CarRentPlatform.Persistence
     public class CarRentPlatformDbContext : DbContext
     {
         private readonly IConfiguration _configuration;
+        private readonly IOptions<RoleOptions> _roleOptions;
         public DbSet<Car> Cars { get; }
         public DbSet<Model> CarModels { get; }
         public DbSet<CarPriceData> CarPriceDatas { get; }
@@ -23,9 +27,10 @@ namespace CarRentPlatform.Persistence
         public DbSet<UserDocumentsData> UserDocumentsDatas { get; }
         public DbSet<Role> Roles { get; }
 
-        public CarRentPlatformDbContext (IConfiguration configuration)
+        public CarRentPlatformDbContext (IConfiguration configuration, IOptions<RoleOptions> roleOptions)
         {
             _configuration = configuration;
+            _roleOptions = roleOptions;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,7 +45,7 @@ namespace CarRentPlatform.Persistence
             modelBuilder.ApplyConfiguration(new UserAccountConfiguration());
             modelBuilder.ApplyConfiguration(new UserConditionConfiguration());
             modelBuilder.ApplyConfiguration(new UserDocumentsDataConfiguration());
-            modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration(_roleOptions.Value));
             base.OnModelCreating(modelBuilder);
         }
 
