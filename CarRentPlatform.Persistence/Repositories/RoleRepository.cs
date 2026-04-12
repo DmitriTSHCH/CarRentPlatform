@@ -71,7 +71,7 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.RolePermissions, rolePermissions), cancellationToken);
             }
 
-            return await GetByIdAsync(roleId, cancellationToken);
+            return await GetByIdAsync(roleNameId, cancellationToken);
         }
     }
 }

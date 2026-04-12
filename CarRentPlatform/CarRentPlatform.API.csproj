@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CarRentPlatform.Application\CarRentPlatform.Application.csproj" />
     <ProjectReference Include="..\CarRentPlatform.Infrastructure\CarRentPlatform.Infrastructure.csproj" />
     <ProjectReference Include="..\CarRentPlatform.Logic\CarRentPlatform.Logic.csproj" />

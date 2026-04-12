@@ -1,3 +1,5 @@
+using CarRentPlatform.API.Extensions;
+using CarRentPlatform.API.Policy;
 using CarRentPlatform.Application.Intefaces.Auth;
 using CarRentPlatform.Infrastructure;
 using CarRentPlatform.Logic.Models;
@@ -7,7 +9,6 @@ using CarRentPlatform.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using System.Data;
-using CarRentPlatform.API.Policy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +18,8 @@ builder.Services.AddControllers();
 builder.Services.Configure<RoleOptions>(builder.Configuration.GetSection(nameof(RoleOptions)));
 
 builder.Services.AddDbContext<CarRentPlatformDbContext>();
-builder.Services.AddScoped<ICarRepository, CarRepository>();
-builder.Services.AddScoped<IModelRepository, ModelRepository>();
-builder.Services.AddScoped<IRentalPeriodRepository, RentalPeriodRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddRepositories();
+builder.Services.AddApplicationsServices();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 builder.Services.AddTransient<IJwtProvider, JwtProvider>();
