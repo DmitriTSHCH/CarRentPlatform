@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="CarRentPlatform.API/CarRentPlatform.API.csproj" />
+  <Project Path="CarRentPlatform.Application/CarRentPlatform.Application.csproj" />
+  <Project Path="CarRentPlatform.Infrastructure/CarRentPlatform.Infrastructure.csproj" />
+  <Project Path="CarRentPlatform.Logic/CarRentPlatform.Logic.csproj" />
+  <Project Path="CarRentPlatform.Persistence/CarRentPlatform.Persistence.csproj" />
+</Solution>

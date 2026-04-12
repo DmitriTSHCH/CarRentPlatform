@@ -137,7 +137,7 @@ namespace CarRentPlatform.Persistence.Repositories
 
             if (models != null)
             {
-                builder = builder.Where(c => models.Contains(c.Model.Model));
+                builder = builder.Where(c => models.Contains(c.Model.ModelName));
             }
 
             builder.Include(c => c.Model)
