@@ -35,7 +35,7 @@ namespace CarRentPlatform.Persistence.Configurations
 
             builder.HasOne(u => u.Role)
                 .WithMany()
-                .HasForeignKey(r => r.RoleId)
+                .HasForeignKey(r => r.RoleNameId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

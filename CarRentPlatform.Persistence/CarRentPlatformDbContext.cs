@@ -13,7 +13,6 @@ namespace CarRentPlatform.Persistence
 {
     public class CarRentPlatformDbContext : DbContext
     {
-        private readonly IConfiguration _configuration;
         private readonly IOptions<RoleOptions> _roleOptions;
         public DbSet<Car> Cars { get; }
         public DbSet<Model> CarModels { get; }
@@ -27,9 +26,9 @@ namespace CarRentPlatform.Persistence
         public DbSet<UserDocumentsData> UserDocumentsDatas { get; }
         public DbSet<Role> Roles { get; }
 
-        public CarRentPlatformDbContext (IConfiguration configuration, IOptions<RoleOptions> roleOptions)
+        public CarRentPlatformDbContext (DbContextOptions<CarRentPlatformDbContext> options, IOptions<RoleOptions> roleOptions)
+            :base(options)
         {
-            _configuration = configuration;
             _roleOptions = roleOptions;
         }
 
@@ -47,14 +46,6 @@ namespace CarRentPlatform.Persistence
             modelBuilder.ApplyConfiguration(new UserDocumentsDataConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration(_roleOptions.Value));
             base.OnModelCreating(modelBuilder);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Database"));
-            }
         }
     }
 }

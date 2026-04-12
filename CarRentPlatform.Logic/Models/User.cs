@@ -13,7 +13,7 @@ namespace CarRentPlatform.Logic.Models
         public UserCondition UserCondition { get; private set; }
         public List<RentalPeriod> Bookings { get; private set; } = new();
 
-        public Guid RoleId { get; set; }
+        public RoleNameId RoleNameId { get; set; }
         public Role Role { get; set; }
 
         public DateTime DateTimeCreation { get; private set; } = DateTime.UtcNow;

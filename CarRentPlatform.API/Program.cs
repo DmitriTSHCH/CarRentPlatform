@@ -7,6 +7,7 @@ using CarRentPlatform.Logic.RepositoriesInterfaces;
 using CarRentPlatform.Persistence;
 using CarRentPlatform.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Data;
 namespace CarRentPlatform.API;
@@ -22,14 +23,18 @@ public class Program
 
         builder.Services.Configure<RoleOptions>(builder.Configuration.GetSection(nameof(RoleOptions)));
 
-        builder.Services.AddDbContext<CarRentPlatformDbContext>();
+        builder.Services.AddDbContext<CarRentPlatformDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
         builder.Services.AddRepositories();
+
         builder.Services.AddApplicationsServices();
 
         builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
         builder.Services.AddTransient<IJwtProvider, JwtProvider>();
         builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
         builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddAuthorization(options =>
         {

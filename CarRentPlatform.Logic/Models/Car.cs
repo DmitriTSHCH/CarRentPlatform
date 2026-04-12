@@ -8,7 +8,7 @@ namespace CarRentPlatform.Logic.Models
     public class Car
     {
         public Guid CarId { get; private set; } = Guid.NewGuid();
-        public Guid ModelId { get; private set; }
+        public Guid? ModelId { get; private set; }
         public CarColor CarColor { get; private set; }
 
         public Model Model { get; private set; }

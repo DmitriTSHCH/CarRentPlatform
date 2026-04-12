@@ -16,6 +16,9 @@ namespace CarRentPlatform.Persistence.Configurations
             builder.ToTable(p => p.HasCheckConstraint("CK_RentalPeriod_RentalPriceBYN_Min", "[RentalPriceBYN] >= 0"));
 
             builder.ToTable(r => r.HasCheckConstraint("CK_RentalPeriod_DateTimeStart_LessThan_DateTimeEnd", "[DateTimeStart] <= [DateTimeEnd]"));
+
+            builder.Property(p => p.RentalPriceBYN)
+                .HasPrecision(18, 2);
         }
     }
 }
