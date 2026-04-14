@@ -7,7 +7,8 @@ namespace CarRentPlatform.Logic.RepositoriesInterfaces
 {
     public interface IUserRepository
     {
-        public Task<User?> AddAsync(User user, UserDocumentsData userDocumentsData, UserAccount userAccount, UserCondition userCondition, CancellationToken cancellationToken = default);
+        public Task<User?> AddUserAsync(User user, CancellationToken cancellationToken = default);
+        public Task<bool> AddUserAccountAsync(UserAccount userAccount, CancellationToken cancellationToken = default);
         public Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default);
         public Task<List<User>> GetUserByFilterAsync(string? firstName, string? lastName,DriverLicenseCategoryFlags? driverLicenseCategory,
                                        DateOnly? licenseExpirationDateWithin, bool? isVerified,

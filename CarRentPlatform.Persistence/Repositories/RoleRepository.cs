@@ -19,8 +19,8 @@ namespace CarRentPlatform.Persistence.Repositories
 
         public async Task<Role> AddAsync(Role role, CancellationToken cancellationToken = default)
         {
-            _dbContext.AddAsync(role, cancellationToken);
-            _dbContext.SaveChangesAsync(cancellationToken);
+            _dbContext.Add(role);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return await GetByIdAsync(role.RoleNameId, cancellationToken);
         }

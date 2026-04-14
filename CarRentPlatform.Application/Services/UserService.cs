@@ -58,15 +58,18 @@ namespace CarRentPlatform.Application.Services
         {
             var hasedPassword = _passwordHasher.Generate(password);
 
-            var user = new User();
-            var userDocuments = new UserDocumentsData(user.UserId, firstName, lastName, passportNumber,
+            var userDocumentsData = new UserDocumentsData(firstName, lastName, passportNumber,
                                                       driverLicenseNumber, driverLicenseCategory, licenseExpirationDate);
-            var userAccount = new UserAccount(user.UserId, hasedPassword, phoneNumber, email);
-            var userCondition = new UserCondition(user.UserId);
+            var userCondition = new UserCondition(true);
+            var user = new User(RoleNameId.User, userDocumentsData, userCondition);
 
-            var addedUser = _userRepository.AddAsync(user, userDocuments, userAccount, userCondition, cancellationToken);
+            var addedUser = await _userRepository.AddUserAsync(user, cancellationToken);
 
-            return (await addedUser == user && addedUser != null);
+            var userAccount = new UserAccount(addedUser.UserId, hasedPassword, phoneNumber, email);
+
+            var IsUserAccountAdded = await _userRepository.AddUserAccountAsync(userAccount, cancellationToken);
+
+            return ((addedUser == user) && (addedUser != null) && IsUserAccountAdded);
         }
     }
 }

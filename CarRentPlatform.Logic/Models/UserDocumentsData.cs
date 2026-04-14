@@ -29,10 +29,9 @@ namespace CarRentPlatform.Logic.Models
         {
 
         }
-        public UserDocumentsData(Guid userId, string firstName, string lastName, string passportNumber, string driverLicenseNumber,
+        public UserDocumentsData(string firstName, string lastName, string passportNumber, string driverLicenseNumber,
                                  DriverLicenseCategoryFlags driverLicenseCategory, DateOnly licenseExpirationDate)
         {
-            UserId = userId;
             FirstName = firstName;
             LastName = lastName;
             PassportNumber = passportNumber;

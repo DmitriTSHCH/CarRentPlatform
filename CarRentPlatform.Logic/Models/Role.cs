@@ -37,7 +37,7 @@ namespace CarRentPlatform.Logic.Models
 
         public Role()
         {
-        
+
         }
     }
 }

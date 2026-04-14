@@ -21,12 +21,14 @@ namespace CarRentPlatform.Logic.Models
         {
 
         }
-        public UserCondition(Guid userId)
+        public UserCondition(bool isNewUser)
         {
-            UserId = userId;
-            IsVerified = false;
-            UserStatus = UserStatus.Active;
-            Rating = maxRating - 1;
+            if (isNewUser)
+            {
+                IsVerified = false;
+                UserStatus = UserStatus.Active;
+                Rating = maxRating - 1;
+            }
         }
     }
 }

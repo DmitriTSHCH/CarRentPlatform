@@ -22,5 +22,12 @@ namespace CarRentPlatform.Logic.Models
         {
 
         }
+
+        public User(RoleNameId roleNameId, UserDocumentsData userDocumentsData, UserCondition userCondition)
+        {
+            RoleNameId = roleNameId;
+            UserDocumentsData = userDocumentsData;
+            UserCondition = userCondition;
+        }
     }
 }

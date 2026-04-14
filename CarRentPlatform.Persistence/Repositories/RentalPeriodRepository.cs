@@ -18,8 +18,8 @@ namespace CarRentPlatform.Persistence.Repositories
 
         public async Task<RentalPeriod?> AddAsync(RentalPeriod rentalPeriod, CancellationToken cancellationToken)
         {
-            _dbContext.AddAsync(rentalPeriod, cancellationToken);
-            _dbContext.SaveChangesAsync(cancellationToken);
+            _dbContext.Add(rentalPeriod);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return await GetByIdAsync(rentalPeriod.PeriodId, cancellationToken);
         }

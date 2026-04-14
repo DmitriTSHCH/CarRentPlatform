@@ -16,14 +16,10 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<User?> AddAsync(User user, UserDocumentsData userDocumentsData, UserAccount userAccount,
-                                          UserCondition userCondition, CancellationToken cancellationToken)
+        public async Task<User?> AddUserAsync(User user, CancellationToken cancellationToken)
         {
-            _dbContext.AddAsync(user, cancellationToken);
-            _dbContext.AddAsync(userCondition, cancellationToken);
-            _dbContext.AddAsync(userAccount, cancellationToken);
-            _dbContext.AddAsync(userDocumentsData, cancellationToken);
-            _dbContext.SaveChangesAsync(cancellationToken);
+            _dbContext.Add(user);
+            await _dbContext.SaveChangesAsync(cancellationToken);      
 
             return await GetUserByIdAsync(user.UserId, cancellationToken);
         }
@@ -349,6 +345,15 @@ namespace CarRentPlatform.Persistence.Repositories
                     .FirstOrDefaultAsync(r => r.UserId == userId, cancellationToken))
                     .Role;
             }
+        }
+
+        public async Task<bool> AddUserAccountAsync(UserAccount userAccount, CancellationToken cancellationToken)
+        {
+            _dbContext.Add(userAccount);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            return await _dbContext.UserAccounts
+                .AnyAsync(a => a.UserId == userAccount.UserId, cancellationToken);
         }
     }
 }

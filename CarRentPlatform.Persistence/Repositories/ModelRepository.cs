@@ -18,9 +18,11 @@ namespace CarRentPlatform.Persistence.Repositories
 
         public async Task<Model?> AddAsync(Model carModel, ModelSpecifications modelSpecifications, CancellationToken cancellationToken = default)
         {
-            _dbContext.AddAsync(modelSpecifications, cancellationToken);
-            _dbContext.AddAsync(carModel, cancellationToken);
-            _dbContext.SaveChangesAsync(cancellationToken);
+            _dbContext.Add(carModel);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            _dbContext.Add(modelSpecifications);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return await GetModelByIdAsync(carModel.ModelId, cancellationToken);
         }
