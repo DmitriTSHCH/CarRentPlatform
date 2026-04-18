@@ -2,6 +2,7 @@
 using CarRentPlatform.Application.Intefaces.Auth;
 using CarRentPlatform.Logic.Models;
 using CarRentPlatform.Logic.RepositoriesInterfaces;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,7 +22,7 @@ namespace CarRentPlatform.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<string> Login(string phoneNumber, string password, CancellationToken cancellationToken)
+        public async Task<string> Login(string phoneNumber, string password, CancellationToken cancellationToken, HttpContext httpContext)
         {
             var exeptionInvalidLoginPasword = new Exception("Неверный логин или пароль");
 
@@ -47,6 +48,8 @@ namespace CarRentPlatform.Application.Services
             }
 
             var token = _jwtProvider.Generate(userId.Value);
+
+            httpContext.Response.Cookies.Append("LogData", token);
 
             return token;
         }

@@ -1,4 +1,5 @@
 ﻿using CarRentPlatform.Logic.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ namespace CarRentPlatform.Application.Intefaces
                                  string firstName, string lastName, string passportNumber,
                                  string driverLicenseNumber, DriverLicenseCategoryFlags driverLicenseCategory,
                                  DateOnly licenseExpirationDate, CancellationToken cancellationToken);
-        public Task<string> Login(string phoneNumber, string password, CancellationToken cancellationToken);
+        public Task<string> Login(string phoneNumber, string password, CancellationToken cancellationToken, HttpContext httpContext);
         public Task<User> GetUserById(Guid userId, CancellationToken cancellationToken);
     }
 }
