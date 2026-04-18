@@ -14,17 +14,17 @@ namespace CarRentPlatform.Persistence
     public class CarRentPlatformDbContext : DbContext
     {
         private readonly IOptions<RoleOptions> _roleOptions;
-        public DbSet<Car> Cars { get; }
-        public DbSet<Model> CarModels { get; }
-        public DbSet<CarPriceData> CarPriceDatas { get; }
-        public DbSet<CarReservationData> CarReservationDatas { get; }
-        public DbSet<ModelSpecifications> ModelSpecifications { get; }
-        public DbSet<RentalPeriod> RentalPeriods { get; }
-        public DbSet<User> Users { get; }
-        public DbSet<UserAccount> UserAccounts { get; }
-        public DbSet<UserCondition> UserConditions { get; }
-        public DbSet<UserDocumentsData> UserDocumentsDatas { get; }
-        public DbSet<Role> Roles { get; }
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<Model> CarModels { get; set; }
+        public DbSet<CarPriceData> CarPriceDatas { get; set; }
+        public DbSet<CarReservationData> CarReservationDatas { get; set; }
+        public DbSet<ModelSpecifications> ModelSpecifications { get; set; }
+        public DbSet<RentalPeriod> RentalPeriods { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserAccount> UserAccounts { get; set; }
+        public DbSet<UserCondition> UserConditions { get; set; }
+        public DbSet<UserDocumentsData> UserDocumentsDatas { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         public CarRentPlatformDbContext (DbContextOptions<CarRentPlatformDbContext> options, IOptions<RoleOptions> roleOptions)
             :base(options)

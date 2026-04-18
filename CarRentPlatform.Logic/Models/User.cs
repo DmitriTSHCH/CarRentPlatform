@@ -23,11 +23,28 @@ namespace CarRentPlatform.Logic.Models
 
         }
 
-        public User(RoleNameId roleNameId, UserDocumentsData userDocumentsData, UserCondition userCondition)
+        public User(RoleNameId roleNameId)
         {
             RoleNameId = roleNameId;
-            UserDocumentsData = userDocumentsData;
-            UserCondition = userCondition;
+        }
+
+        public User AddCondition(User user, UserCondition userCondition)
+        { 
+            user.UserCondition = userCondition;
+            return user;
+        }
+        public User AddDocumentsData(User user, UserDocumentsData userDocumentsData)
+        { 
+            user.UserDocumentsData = userDocumentsData;
+            return user;
+        }
+        public bool Equals(User user1, User user2)
+        {
+            return (user1.UserId == user2.UserId) &&
+                (user1.RoleNameId == user2.RoleNameId) &&
+                (user1.DateTimeCreation == user2.DateTimeCreation) &&
+                (user1.UserCondition.Equals(user1.UserCondition, user2.UserCondition)) &&
+                (user1.UserDocumentsData.Equals(user1.UserDocumentsData, user2.UserDocumentsData));
         }
     }
 }

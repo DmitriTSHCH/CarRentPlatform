@@ -58,10 +58,14 @@ namespace CarRentPlatform.Application.Services
         {
             var hasedPassword = _passwordHasher.Generate(password);
 
-            var userDocumentsData = new UserDocumentsData(firstName, lastName, passportNumber,
+            var user = new User(RoleNameId.User);
+
+            var userDocumentsData = new UserDocumentsData(user.UserId, firstName, lastName, passportNumber,
                                                       driverLicenseNumber, driverLicenseCategory, licenseExpirationDate);
-            var userCondition = new UserCondition(true);
-            var user = new User(RoleNameId.User, userDocumentsData, userCondition);
+            var userCondition = new UserCondition(user.UserId, true);
+
+            user = user.AddDocumentsData(user, userDocumentsData);
+            user = user.AddCondition(user, userCondition);
 
             var addedUser = await _userRepository.AddUserAsync(user, cancellationToken);
 
@@ -69,7 +73,12 @@ namespace CarRentPlatform.Application.Services
 
             var IsUserAccountAdded = await _userRepository.AddUserAccountAsync(userAccount, cancellationToken);
 
-            return ((addedUser == user) && (addedUser != null) && IsUserAccountAdded);
+            return ((addedUser.Equals(addedUser, user)) && (addedUser != null) && IsUserAccountAdded);
+        }
+
+        public async Task<User> GetUserById(Guid userId, CancellationToken cancellationToken)
+        {
+            return await _userRepository.GetUserByIdAsync(userId, cancellationToken);
         }
     }
 }

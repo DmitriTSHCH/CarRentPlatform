@@ -12,5 +12,6 @@ namespace CarRentPlatform.Application.Intefaces
                                  string driverLicenseNumber, DriverLicenseCategoryFlags driverLicenseCategory,
                                  DateOnly licenseExpirationDate, CancellationToken cancellationToken);
         public Task<string> Login(string phoneNumber, string password, CancellationToken cancellationToken);
+        public Task<User> GetUserById(Guid userId, CancellationToken cancellationToken);
     }
 }

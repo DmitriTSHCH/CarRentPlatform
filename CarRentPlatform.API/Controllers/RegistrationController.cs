@@ -15,8 +15,8 @@ namespace CarRentPlatform.API.Controllers
                          DriverLicenseCategoryFlags driverLicenseCategory, DateOnly licenseExpirationDate,
                          CancellationToken cancellationToken)
         {
-            var isRegistrationSuccess = userService.Registration(phoneNumber, email, password, firstName, lastName, passportNumber, driverLicenseNumber, driverLicenseCategory, licenseExpirationDate, cancellationToken);
-            if (await isRegistrationSuccess == true)
+            var isRegistrationSuccess = await userService.Registration(phoneNumber, email, password, firstName, lastName, passportNumber, driverLicenseNumber, driverLicenseCategory, licenseExpirationDate, cancellationToken);
+            if (isRegistrationSuccess == true)
             {
                 return Ok();
             }

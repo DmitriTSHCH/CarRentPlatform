@@ -29,15 +29,27 @@ namespace CarRentPlatform.Logic.Models
         {
 
         }
-        public UserDocumentsData(string firstName, string lastName, string passportNumber, string driverLicenseNumber,
+        public UserDocumentsData(Guid userId, string firstName, string lastName, string passportNumber, string driverLicenseNumber,
                                  DriverLicenseCategoryFlags driverLicenseCategory, DateOnly licenseExpirationDate)
         {
+            UserId = userId;
             FirstName = firstName;
             LastName = lastName;
             PassportNumber = passportNumber;
             DriverLicenseNumber = driverLicenseNumber;
             DriverLicenseCategory = driverLicenseCategory;
             LicenseExpirationDate = licenseExpirationDate;
+        }
+
+        public bool Equals(UserDocumentsData userDocumentsData1, UserDocumentsData userDocumentsData2)
+        {
+            return (userDocumentsData1.UserId == userDocumentsData2.UserId) &&
+                (userDocumentsData1.FirstName == userDocumentsData2.FirstName) &&
+                (userDocumentsData1.LastName == userDocumentsData2.LastName) &&
+                (userDocumentsData1.PassportNumber == userDocumentsData2.PassportNumber) &&
+                (userDocumentsData1.DriverLicenseNumber == userDocumentsData2.DriverLicenseNumber) &&
+                (userDocumentsData1.DriverLicenseCategory == userDocumentsData2.DriverLicenseCategory) &&
+                (userDocumentsData1.LicenseExpirationDate == userDocumentsData2.LicenseExpirationDate);
         }
     }
 }

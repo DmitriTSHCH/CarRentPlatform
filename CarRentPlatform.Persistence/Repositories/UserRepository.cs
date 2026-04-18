@@ -19,9 +19,11 @@ namespace CarRentPlatform.Persistence.Repositories
         public async Task<User?> AddUserAsync(User user, CancellationToken cancellationToken)
         {
             _dbContext.Add(user);
-            await _dbContext.SaveChangesAsync(cancellationToken);      
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return await GetUserByIdAsync(user.UserId, cancellationToken);
+            User AddedUser = await GetUserByIdAsync(user.UserId, cancellationToken);
+
+            return AddedUser;
         }
 
         public async Task<List<User>> GetUserByFilterAsync(string? firstName, string? lastName, 
@@ -352,8 +354,10 @@ namespace CarRentPlatform.Persistence.Repositories
             _dbContext.Add(userAccount);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return await _dbContext.UserAccounts
+            bool isAdded = await _dbContext.UserAccounts
                 .AnyAsync(a => a.UserId == userAccount.UserId, cancellationToken);
+
+            return isAdded;
         }
     }
 }
