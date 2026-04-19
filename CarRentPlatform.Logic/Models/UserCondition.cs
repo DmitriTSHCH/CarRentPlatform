@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CarRentPlatform.Logic.Models
 {
-    public enum UserStatus { Active, Banned, Deleted }
+    public enum UserStatus { Active, Banned, Deleted, WaitVerification }
     public class UserCondition
     {
         private const int maxRating = 10;

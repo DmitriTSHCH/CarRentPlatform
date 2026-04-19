@@ -27,5 +27,6 @@ namespace CarRentPlatform.Application.Intefaces
                                        DateOnly? licenseExpirationDateWithin, bool? isVerified,
                                        List<UserStatus>? userStatuses, decimal? minRating, decimal? maxRating,
                                        CancellationToken cancellationToken = default);
+        public Task<bool> CheckPasswordAsync(Guid userId, string password, CancellationToken cancellationToken = default);
     }
 }

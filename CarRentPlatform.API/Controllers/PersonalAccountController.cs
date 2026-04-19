@@ -18,16 +18,65 @@ namespace CarRentPlatform.API.Controllers
         [Authorize(Policy = PolicyNames.ReadSelf)]
         public async Task<IActionResult> GetSelfInfo(CancellationToken cancellationToken)
         {
-            var userIdClaim = User.FindFirst("userId")?.Value;
-
-            if (!Guid.TryParse(userIdClaim, out Guid userId))
-            {
-                return Unauthorized("недоступно");
-            }
+            var userId = await GetIdFromClaimsAsync();
 
             var userInfo = await userService.GetPersonalInfoByIdAsync(userId, cancellationToken);
 
             return Ok(userInfo);
+        }
+
+        [HttpPut("UpdatePhoneNumber")]
+        [Authorize(Policy = PolicyNames.UpdateSelf)]
+        public async Task<IActionResult> UpdateSelfPhoneNumber(string newPhoneNumber, string password, CancellationToken cancellationToken)
+        {
+            var userId = await GetIdFromClaimsAsync();
+
+            if (await userService.CheckPasswordAsync(userId, password, cancellationToken))
+            {
+                userService.UpdatePhoneNumberAsync(userId, newPhoneNumber, cancellationToken);
+                return Ok();
+            }
+            return Unauthorized("недоступно");
+        }
+
+        [HttpPut("UpdateEmail")]
+        [Authorize(Policy = PolicyNames.UpdateSelf)]
+        public async Task<IActionResult> UpdateSelfEmail(string newEmail, string password, CancellationToken cancellationToken)
+        {
+            var userId = await GetIdFromClaimsAsync();
+
+            if (await userService.CheckPasswordAsync(userId, password, cancellationToken))
+            {
+                userService.UpdateEmailAsync(userId, newEmail, cancellationToken);
+                return Ok();
+            }
+            return Unauthorized("недоступно");
+        }
+
+        [HttpPut("UpdatePassword")]
+        [Authorize(Policy = PolicyNames.UpdateSelf)]
+        public async Task<IActionResult> UpdateSelfPassword(string oldPassword, string newPassword, CancellationToken cancellationToken)
+        {
+            var userId = await GetIdFromClaimsAsync();
+
+            if (await userService.CheckPasswordAsync(userId, oldPassword, cancellationToken))
+            {
+                userService.UpdatePasswordAsync(userId, newPassword, cancellationToken);
+                return Ok();
+            }
+            return Unauthorized("недоступно");
+        }
+
+
+        private async Task<Guid> GetIdFromClaimsAsync()
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+
+            if (!Guid.TryParse(userIdClaim, out Guid userId))
+            {
+                return Guid.Empty;
+            }
+            return userId;
         }
     }
 }

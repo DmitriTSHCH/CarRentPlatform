@@ -118,5 +118,19 @@ namespace CarRentPlatform.Application.Services
         {
             return await _userRepository.GetUserByFilterAsync(firstName, lastName, driverLicenseCategory, licenseExpirationDateWithin, isVerified, userStatuses, minRating, maxRating, cancellationToken);
         }
+        public async Task<bool> CheckPasswordAsync(Guid userId, string password, CancellationToken cancellationToken = default)
+        {
+            var exeptionInvalidLoginPasword = new Exception("Неверный логин или пароль");
+
+            var hashedPassword = await _userRepository.GetHashedPasswordAsync(userId, cancellationToken);
+
+            if (hashedPassword == null)
+            {
+                throw exeptionInvalidLoginPasword;
+            }
+
+            var isVerified = _passwordHasher.Verify(password, hashedPassword);
+            return isVerified;
+        }
     }
 }

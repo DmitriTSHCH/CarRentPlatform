@@ -111,6 +111,12 @@ namespace CarRentPlatform.Persistence.Repositories
                 (email != null && a.Email == email), cancellationToken))?
                 .HashedPassword;
         }
+        public async Task<string?> GetHashedPasswordAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return (await _dbContext.UserAccounts
+                .FirstOrDefaultAsync(a =>a.UserId == userId, cancellationToken))?
+                .HashedPassword;
+        }
 
         public async Task<Guid?> GetIdByEmailAsync(string email, CancellationToken cancellationToken)
         {
