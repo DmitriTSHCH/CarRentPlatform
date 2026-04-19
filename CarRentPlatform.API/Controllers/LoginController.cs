@@ -12,7 +12,7 @@ namespace CarRentPlatform.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string phoneNumber, string password, CancellationToken cancellationToken)
         { 
-            return Ok(await userService.Login(phoneNumber, password, cancellationToken, HttpContext));
+            return Ok(await userService.LoginAsync(phoneNumber, password, HttpContext, cancellationToken));
         }
     }
 }

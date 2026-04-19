@@ -9,6 +9,7 @@ using CarRentPlatform.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using System.Data;
 namespace CarRentPlatform.API;
 
@@ -16,9 +17,37 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "Введите JWT токен в формате: Bearer {ваш_токен}",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
+
         builder.Services.AddControllers();
 
         builder.Services.Configure<RoleOptions>(builder.Configuration.GetSection(nameof(RoleOptions)));
@@ -35,6 +64,8 @@ public class Program
         builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
         builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddAuthenticationExeption(builder.Configuration);
 
         builder.Services.AddAuthorization(options =>
         {

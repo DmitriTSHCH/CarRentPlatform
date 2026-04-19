@@ -29,7 +29,7 @@ namespace CarRentPlatform.Infrastructure
                                              expires: DateTime.UtcNow.AddHours(_options.ExpireHours),
                                              claims: claims,
                                              issuer: _options.Issuer,
-                                             audience: _options.Audiens);
+                                             audience: _options.Audience);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
