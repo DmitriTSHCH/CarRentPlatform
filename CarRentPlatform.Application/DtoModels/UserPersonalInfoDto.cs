@@ -46,7 +46,7 @@ namespace CarRentPlatform.Application.DtoModels
             LicenseExpirationDate = user.UserDocumentsData.LicenseExpirationDate;
             IsVerified = user.UserCondition.IsVerified;
             UserStatus = user.UserCondition.UserStatus;
-            Rating = Rating;
+            Rating = user.UserCondition.Rating;
             Email = email;
             PhoneNumber = phoneNumber;
 
