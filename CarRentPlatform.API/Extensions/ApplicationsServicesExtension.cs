@@ -1,4 +1,5 @@
 ﻿using CarRentPlatform.Application.Intefaces;
+using CarRentPlatform.Application.Interfaces;
 using CarRentPlatform.Application.Services;
 using CarRentPlatform.Logic.RepositoriesInterfaces;
 using CarRentPlatform.Persistence.Repositories;
@@ -10,6 +11,8 @@ namespace CarRentPlatform.API.Extensions
         public static IServiceCollection AddApplicationsServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICarService, CarService>();
+            services.AddScoped<IRentalPeriodService, RentalPeriodService>();
             return services;
         }
     }

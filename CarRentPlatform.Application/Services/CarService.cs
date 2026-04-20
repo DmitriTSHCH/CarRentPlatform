@@ -12,7 +12,10 @@ namespace CarRentPlatform.Application.Services
     public class CarService : ICarService
     {
         private readonly ICarRepository _carRepository;
-        public CarService
+        public CarService(ICarRepository carRepository)
+        { 
+            _carRepository = carRepository;
+        }
         public async Task<Car?> AddAsync(Car car, CarPriceData carPriceData, CarReservationData carReservationData, CancellationToken cancellationToken = default)
         {
             return await _carRepository.AddAsync(car, carPriceData, carReservationData, cancellationToken);
