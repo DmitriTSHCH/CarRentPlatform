@@ -10,7 +10,7 @@ namespace CarRentPlatform.Logic.Models
     {
         public Guid CarId { get; private set; }
         public CarReservationStatus CarReservationStatus { get; private set; }
-        public TimeSpan ServiceTime { get; private set; }
+        public int ServiceTimeHours { get; private set; }
 
         public List<RentalPeriod> OccupiedPeriods { get; private set; } = new();
 

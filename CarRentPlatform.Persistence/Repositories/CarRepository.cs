@@ -30,7 +30,7 @@ namespace CarRentPlatform.Persistence.Repositories
 
         public Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, decimal? pricePerDayBYN,
                                       decimal? lateReturnPenaltyPerDayBYN, CarReservationStatus? carReservationStatus,
-                                      TimeSpan? serviceTime, CancellationToken cancellationToken = default)
+                                      int? serviceTime, CancellationToken cancellationToken = default)
         {
             UpdateCarPriceDataAsync(carId, pricePerDayBYN, lateReturnPenaltyPerDayBYN, cancellationToken);
             UpdateCarReservationDataAsync(carId, carReservationStatus, serviceTime, cancellationToken);
@@ -77,7 +77,7 @@ namespace CarRentPlatform.Persistence.Repositories
 
         public async Task<CarReservationData?> UpdateCarReservationDataAsync(Guid carId,
                                                                              CarReservationStatus? carReservationStatus,
-                                                                             TimeSpan? serviceTime,
+                                                                             int? serviceTimeHours,
                                                                              CancellationToken cancellationToken)
         {
             var builder = _dbContext.CarReservationDatas
@@ -88,9 +88,9 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.CarReservationStatus, carReservationStatus), cancellationToken);
             }
 
-            if (serviceTime != null)
+            if (serviceTimeHours != null)
             {
-                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.ServiceTime, serviceTime), cancellationToken);
+                builder.ExecuteUpdateAsync(r => r.SetProperty(p => p.ServiceTimeHours, serviceTimeHours), cancellationToken);
             }
 
             return await GetCarReservationDataByIdAsync(carId, cancellationToken);
@@ -235,7 +235,8 @@ namespace CarRentPlatform.Persistence.Repositories
                 builder = builder.Where(c => !c
                 .CarReservationData
                 .OccupiedPeriods
-                .Any(p => dateTimeStartNewPeriod < (p.DateTimeEnd + c.CarReservationData.ServiceTime) && dateTimeEndNewPeriod > (p.DateTimeStart - c.CarReservationData.ServiceTime)));
+                .Any(p => (EF.Functions.DateDiffHour(p.DateTimeEnd, dateTimeStartNewPeriod)) < c.CarReservationData.ServiceTimeHours && 
+                          (EF.Functions.DateDiffHour(dateTimeEndNewPeriod, p.DateTimeStart)) < c.CarReservationData.ServiceTimeHours));
             }
 
             builder.Include(c => c.Model)
@@ -281,7 +282,8 @@ namespace CarRentPlatform.Persistence.Repositories
             return await _dbContext.CarReservationDatas
                 .Where(c => !c
                 .OccupiedPeriods
-                .Any(p => dateTimeStart < (p.DateTimeEnd + c.ServiceTime) && dateTimeEnd > (p.DateTimeStart - c.ServiceTime)))
+                .Any(p => (EF.Functions.DateDiffHour(p.DateTimeEnd, dateTimeStart)) < c.ServiceTimeHours &&
+                          (EF.Functions.DateDiffHour(dateTimeEnd, p.DateTimeStart)) < c.ServiceTimeHours))
                 .ToListAsync(cancellationToken);
         }
 
@@ -290,7 +292,8 @@ namespace CarRentPlatform.Persistence.Repositories
             return await _dbContext.CarReservationDatas
                 .Where(c => c
                 .OccupiedPeriods
-                .Any(p => dateTimeStart < (p.DateTimeEnd + c.ServiceTime) && dateTimeEnd > (p.DateTimeStart - c.ServiceTime)))
+                .Any(p => (EF.Functions.DateDiffHour(p.DateTimeEnd, dateTimeStart)) < c.ServiceTimeHours &&
+                          (EF.Functions.DateDiffHour(dateTimeEnd, p.DateTimeStart)) < c.ServiceTimeHours))
                 .ToListAsync(cancellationToken);
         }
 

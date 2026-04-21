@@ -12,11 +12,11 @@ namespace CarRentPlatform.Application.Interfaces
         public Task<Car?> AddAsync(Car car, CarPriceData carPriceData, CarReservationData carReservationData, CancellationToken cancellationToken = default);
         public Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, decimal? pricePerDayBYN,
                                       decimal? lateReturnPenaltyPerDayBYN, CarReservationStatus? carReservationStatus,
-                                      TimeSpan? serviceTime, CancellationToken cancellationToken = default);
+                                      int? serviceTimeHours, CancellationToken cancellationToken = default);
         public Task<Car?> UpdateCarAsync(Guid carId, Guid? modelId, CarColor? carColor, CancellationToken cancellationToken = default);
         public Task<CarPriceData?> UpdateCarPriceDataAsync(Guid carId, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN, CancellationToken cancellationToken = default);
         public Task<CarReservationData?> UpdateCarReservationDataAsync(Guid carId, CarReservationStatus? carReservationStatus,
-                                         TimeSpan? serviceTime, CancellationToken cancellationToken = default);
+                                         int? serviceTimeHours, CancellationToken cancellationToken = default);
         public Task<Car?> GetCarByIdAsync(Guid carId, CancellationToken cancellationToken = default);
         public Task<CarPriceData?> GetCarPriceDataByIdAsync(Guid carId, CancellationToken cancellationToken = default);
         public Task<CarReservationData?> GetCarReservationDataByIdAsync(Guid carId, CancellationToken cancellationToken = default);

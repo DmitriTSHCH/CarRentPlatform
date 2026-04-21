@@ -78,9 +78,9 @@ namespace CarRentPlatform.Application.Services
             return await _carRepository.GetCarReservationDataByStatusAsync(carReservationStatuses, cancellationToken);
         }
 
-        public async Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN, CarReservationStatus? carReservationStatus, TimeSpan? serviceTime, CancellationToken cancellationToken = default)
+        public async Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN, CarReservationStatus? carReservationStatus, int? serviceTimeHours, CancellationToken cancellationToken = default)
         {
-            return await _carRepository.UpdateAsync(carId, modelId, carColor, pricePerDayBYN, lateReturnPenaltyPerDayBYN, carReservationStatus, serviceTime, cancellationToken);
+            return await _carRepository.UpdateAsync(carId, modelId, carColor, pricePerDayBYN, lateReturnPenaltyPerDayBYN, carReservationStatus, serviceTimeHours, cancellationToken);
         }
 
         public async Task<Car?> UpdateCarAsync(Guid carId, Guid? modelId, CarColor? carColor, CancellationToken cancellationToken = default)
@@ -93,9 +93,9 @@ namespace CarRentPlatform.Application.Services
             return await _carRepository.UpdateCarPriceDataAsync(carId, pricePerDayBYN, lateReturnPenaltyPerDayBYN, cancellationToken);
         }
 
-        public async Task<CarReservationData?> UpdateCarReservationDataAsync(Guid carId, CarReservationStatus? carReservationStatus, TimeSpan? serviceTime, CancellationToken cancellationToken = default)
+        public async Task<CarReservationData?> UpdateCarReservationDataAsync(Guid carId, CarReservationStatus? carReservationStatus, int? serviceTimeHours, CancellationToken cancellationToken = default)
         {
-            return await _carRepository.UpdateCarReservationDataAsync(carId, carReservationStatus, serviceTime, cancellationToken);
+            return await _carRepository.UpdateCarReservationDataAsync(carId, carReservationStatus, serviceTimeHours, cancellationToken);
         }
     }
 }
