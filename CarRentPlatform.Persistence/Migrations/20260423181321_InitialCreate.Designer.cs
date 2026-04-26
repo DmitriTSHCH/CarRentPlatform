@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarRentPlatform.Persistence.Migrations
 {
     [DbContext(typeof(CarRentPlatformDbContext))]
-    [Migration("20260412175833_InitialCreate")]
+    [Migration("20260423181321_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -78,8 +78,8 @@ namespace CarRentPlatform.Persistence.Migrations
                     b.Property<int>("CarReservationStatus")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("ServiceTime")
-                        .HasColumnType("time");
+                    b.Property<int>("ServiceTimeHours")
+                        .HasColumnType("int");
 
                     b.HasKey("CarId");
 

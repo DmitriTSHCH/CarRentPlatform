@@ -143,7 +143,7 @@ namespace CarRentPlatform.Persistence.Migrations
                 {
                     CarId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CarReservationStatus = table.Column<int>(type: "int", nullable: false),
-                    ServiceTime = table.Column<TimeSpan>(type: "time", nullable: false)
+                    ServiceTimeHours = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

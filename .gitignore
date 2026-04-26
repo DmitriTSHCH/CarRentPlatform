@@ -7,3 +7,5 @@
 bin/
 obj/
 .vs/
+/CarRentPlatform.API/appsettings.json
+/CarRentPlatform.API/appsettings.Development.json

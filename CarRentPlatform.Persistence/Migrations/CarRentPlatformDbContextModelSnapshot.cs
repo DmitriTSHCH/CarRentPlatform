@@ -75,8 +75,8 @@ namespace CarRentPlatform.Persistence.Migrations
                     b.Property<int>("CarReservationStatus")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("ServiceTime")
-                        .HasColumnType("time");
+                    b.Property<int>("ServiceTimeHours")
+                        .HasColumnType("int");
 
                     b.HasKey("CarId");
 
