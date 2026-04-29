@@ -127,22 +127,22 @@ namespace CarRentPlatform.Persistence.Repositories
             var builder = _dbContext.Cars
                 .AsNoTracking();
 
-            if (carColors != null)
+            if (carColors != null && carColors.Count > 0)
             {
                 builder = builder.Where(c => carColors.Contains(c.CarColor));
             }
 
-            if (brands != null)
+            if (brands != null && brands.Count > 0)
             {
                 builder = builder.Where(c => brands.Contains(c.Model.Brand));
             }
 
-            if (models != null)
+            if (models != null && models.Count > 0)
             {
                 builder = builder.Where(c => models.Contains(c.Model.ModelName));
             }
 
-            builder.Include(c => c.Model)
+            builder = builder.Include(c => c.Model)
                 .Include(c => c.CarPriceData)
                 .Include(c => c.CarReservationData);
 
@@ -160,27 +160,27 @@ namespace CarRentPlatform.Persistence.Repositories
             var builder = _dbContext.Cars
                 .AsNoTracking();
 
-            if (carColors != null)
+            if (carColors != null && carColors.Count > 0)
             {
                 builder = builder.Where(c => carColors.Contains(c.CarColor));
             }
 
-            if (brands != null)
+            if (brands != null && brands.Count > 0)
             {
                 builder = builder.Where(c => brands.Contains(c.Model.Brand));
             }
 
-            if (models != null)
+            if (models != null && models.Count > 0)
             {
                 builder = builder.Where(c => models.Contains(c.Model.ModelName));
             }
 
-            if (carTypes != null)
+            if (carTypes != null && carTypes.Count > 0)
             {
                 builder = builder.Where(c => carTypes.Contains(c.Model.ModelSpecifications.CarType));
             }
 
-            if (fuels != null)
+            if (fuels != null && fuels.Count > 0)
             {
                 builder = builder.Where(c => fuels.Contains(c.Model.ModelSpecifications.Fuel));
             }
@@ -239,7 +239,7 @@ namespace CarRentPlatform.Persistence.Repositories
                           (EF.Functions.DateDiffHour(dateTimeEndNewPeriod, p.DateTimeStart)) < c.CarReservationData.ServiceTimeHours));
             }
 
-            builder.Include(c => c.Model)
+            builder = builder.Include(c => c.Model)
                 .Include(c => c.CarPriceData)
                 .Include(c => c.CarReservationData);
 
@@ -304,6 +304,21 @@ namespace CarRentPlatform.Persistence.Repositories
                 .AsNoTracking()
                 .Where(r => carReservationStatuses.Contains(r.CarReservationStatus))
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<bool> IsCarFreeForThePeriod(Guid carId, DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken = default)
+        {
+            var serviceTimeHours = (await _dbContext.CarReservationDatas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CarId == carId, cancellationToken))
+                .ServiceTimeHours;
+
+            return (await _dbContext.CarReservationDatas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CarId == carId, cancellationToken))
+                .OccupiedPeriods
+                .Any(p => (EF.Functions.DateDiffHour(p.DateTimeEnd, startDateTime)) < serviceTimeHours &&
+                          (EF.Functions.DateDiffHour(endDateTime, p.DateTimeStart)) < serviceTimeHours);
         }
     }
 }

@@ -33,5 +33,6 @@ namespace CarRentPlatform.Application.Interfaces
         public Task<List<CarReservationData>> GetCarReservationDataByFreePeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken = default);
         public Task<List<CarReservationData>> GetCarReservationDataByOccupiedPeriodAsync(DateTime dateTimeStart, DateTime dateTimeEnd, CancellationToken cancellationToken = default);
         public Task<List<CarReservationData>> GetCarReservationDataByStatusAsync(List<CarReservationStatus> carReservationStatuses, CancellationToken cancellationToken = default);
+        public Task<bool> IsCarFreeForThePeriod(Guid carId, DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken = default);
     }
 }

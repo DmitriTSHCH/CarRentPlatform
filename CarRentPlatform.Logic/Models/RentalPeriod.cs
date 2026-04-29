@@ -25,5 +25,15 @@ namespace CarRentPlatform.Logic.Models
         {
 
         }
+
+        public RentalPeriod(DateTime dateTimeStart, DateTime dateTimeEnd, Guid carId, Guid userId, decimal rentalPriceBYN)
+        {
+            DateTimeStart = dateTimeEnd;
+            DateTimeEnd = dateTimeStart;
+            CarId = carId;
+            UserId = userId;
+            RentalPriceBYN = rentalPriceBYN;
+            PeriodStatus = PeriodStatus.waitPayment;
+        }
     }
 }

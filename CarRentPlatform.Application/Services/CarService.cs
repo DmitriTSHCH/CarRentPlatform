@@ -78,6 +78,11 @@ namespace CarRentPlatform.Application.Services
             return await _carRepository.GetCarReservationDataByStatusAsync(carReservationStatuses, cancellationToken);
         }
 
+        public async Task<bool> IsCarFreeForThePeriod(Guid carId, DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken = default)
+        {
+            return await _carRepository.IsCarFreeForThePeriod(carId, startDateTime, endDateTime, cancellationToken );
+        }
+
         public async Task<Car?> UpdateAsync(Guid carId, Guid? modelId, CarColor? carColor, decimal? pricePerDayBYN, decimal? lateReturnPenaltyPerDayBYN, CarReservationStatus? carReservationStatus, int? serviceTimeHours, CancellationToken cancellationToken = default)
         {
             return await _carRepository.UpdateAsync(carId, modelId, carColor, pricePerDayBYN, lateReturnPenaltyPerDayBYN, carReservationStatus, serviceTimeHours, cancellationToken);
