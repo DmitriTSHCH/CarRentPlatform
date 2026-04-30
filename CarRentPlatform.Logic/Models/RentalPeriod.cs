@@ -28,8 +28,8 @@ namespace CarRentPlatform.Logic.Models
 
         public RentalPeriod(DateTime dateTimeStart, DateTime dateTimeEnd, Guid carId, Guid userId, decimal rentalPriceBYN)
         {
-            DateTimeStart = dateTimeEnd;
-            DateTimeEnd = dateTimeStart;
+            DateTimeStart = dateTimeStart;
+            DateTimeEnd = dateTimeEnd;
             CarId = carId;
             UserId = userId;
             RentalPriceBYN = rentalPriceBYN;

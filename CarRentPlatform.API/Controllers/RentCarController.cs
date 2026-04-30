@@ -11,16 +11,16 @@ namespace CarRentPlatform.API.Controllers
     public class RentCarController(IRentalPeriodService rentalPeriodService, ICarService carService) : ControllerBase
     {
         [HttpPost]
-        [Route("cars/{CadId}")]
-        public async Task<IActionResult> RentCarForPeriod(Guid cadId, DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken)
+        [Route("cars/{CarId}")]
+        public async Task<IActionResult> RentCarForPeriod(Guid carId, DateTime startDateTime, DateTime endDateTime, CancellationToken cancellationToken)
         {
-            if (await carService.IsCarFreeForThePeriod(cadId, startDateTime, endDateTime, cancellationToken))
+            if (await carService.IsCarFreeForThePeriod(carId, startDateTime, endDateTime, cancellationToken))
             {
-                var PeriodPrice = ((await carService.GetCarPriceDataByIdAsync(cadId, cancellationToken)).PricePerDayBYN) * (decimal)((endDateTime - startDateTime).TotalDays);
+                var PeriodPrice = ((await carService.GetCarPriceDataByIdAsync(carId, cancellationToken)).PricePerDayBYN) * (decimal)((endDateTime - startDateTime).TotalDays);
 
                 var userId = await GetIdFromClaimsAsync();
 
-                var rentPeriod = new RentalPeriod(startDateTime, endDateTime, cadId, userId, PeriodPrice);
+                var rentPeriod = new RentalPeriod(startDateTime, endDateTime, carId, userId, PeriodPrice);
 
                 return Ok(await rentalPeriodService.AddAsync(rentPeriod));
             }

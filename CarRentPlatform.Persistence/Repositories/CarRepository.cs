@@ -313,12 +313,12 @@ namespace CarRentPlatform.Persistence.Repositories
                 .FirstOrDefaultAsync(c => c.CarId == carId, cancellationToken))
                 .ServiceTimeHours;
 
-            return (await _dbContext.CarReservationDatas
+            return !((await _dbContext.CarReservationDatas
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CarId == carId, cancellationToken))
                 .OccupiedPeriods
                 .Any(p => (EF.Functions.DateDiffHour(p.DateTimeEnd, startDateTime)) < serviceTimeHours &&
-                          (EF.Functions.DateDiffHour(endDateTime, p.DateTimeStart)) < serviceTimeHours);
+                          (EF.Functions.DateDiffHour(endDateTime, p.DateTimeStart)) < serviceTimeHours));
         }
     }
 }
